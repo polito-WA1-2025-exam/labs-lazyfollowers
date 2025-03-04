@@ -1,4 +1,4 @@
-# Group "GROUP NAME"
+# Group "LAZY FOLLOWER"
 
 ## Members
 - s347522 MANTZARIDES GUILLAUME
