@@ -1,3 +1,6 @@
+
+import sqlite from "sqlite3";
+
 import PokeBowl from "./entities/Pokebowl.mjs";
 import Protein from "./entities/Protein.mjs";
 import Ingredient from "./entities/Ingredient.mjs";
