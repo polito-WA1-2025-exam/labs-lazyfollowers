@@ -3,6 +3,8 @@
 // constructor function of protein 
 function Protein (name) {
     this.name = name;
+    this.id = undefined;
+
 }
 
 

@@ -16,6 +16,7 @@
     "globals": "^16.0.0"
   },
   "dependencies": {
+    "fs": "^0.0.1-security",
     "sqlite3": "^5.1.7"
   }
 }

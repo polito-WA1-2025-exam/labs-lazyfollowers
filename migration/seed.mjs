@@ -138,7 +138,7 @@ async function seedTables() {
 }
 
 // Function to query the tables
-function queryTables() {
+async function queryTables() {
     db.all('SELECT * FROM Portions', [], (err, rows) => {
         if (err) {
             console.error('Error querying Portions table:', err);
@@ -176,11 +176,7 @@ function queryTables() {
 async function main() {
     await createTables();
     await seedTables();
-    queryTables();
-}
-
-// Run the main function
-await main();
+    await queryTables();
 
 // Close the database connection
 db.close((err) => {
@@ -190,3 +186,8 @@ db.close((err) => {
         console.log('Database connection closed');
     }
 });
+}
+
+// Run the main function
+main();
+

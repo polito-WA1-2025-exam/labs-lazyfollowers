@@ -4,6 +4,8 @@ import Portion from "./Portion.mjs";
 
 // constructor function of poke_bowl 
 function PokeBowl(size) {
+    this.id = undefined;
+    
     this.price = 0;
     this.base = undefined; //base
     this.protein = []; //array of protein
