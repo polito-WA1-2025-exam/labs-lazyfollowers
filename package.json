@@ -8,10 +8,14 @@
   },
   "keywords": [],
   "author": "",
+  "type": "module",
   "license": "ISC",
   "devDependencies": {
     "@eslint/js": "^9.21.0",
     "eslint": "^9.21.0",
     "globals": "^16.0.0"
+  },
+  "dependencies": {
+    "sqlite3": "^5.1.7"
   }
 }
