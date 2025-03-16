@@ -12,8 +12,12 @@ import Base from "./entities/Base.mjs";
 const db = new sqlite.Database('data.sqlite');
 
 let poke_1 = new PokeBowl('R');
-poke_1.base = new Ingredient('Riz');
-poke_1.protein.push(new Protein('Thon'));
+let base = new Base('Rim');
 
-
-console.log(poke_1);
+try {
+    base.update_database();
+}
+catch (e) {
+    console.error(e);
+}
+base.insert_into_database();
