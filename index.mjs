@@ -9,15 +9,25 @@ import Portion from "./entities/Portion.mjs";
 import OrderService from "./service/OrderService.mjs";
 import Base from "./entities/Base.mjs";
 
-const db = new sqlite.Database('data.sqlite');
-
 let poke_1 = new PokeBowl('R');
-let base = new Base('Rim');
+async function main() {
+    try {
+        let base = await new Base().fetch_by_id(7);
+        console.log(base);
+    }
+    catch (e) {
+        console.error(e);
+    }
 
-try {
-    base.update_database();
+    //     base.name = 'Pasta';
+
+    //     console.log(base);
+    //     try {
+    //         await base.update_database();
+    //     }
+    //     catch (e) {
+    //         console.error(e);
+    //     }
 }
-catch (e) {
-    console.error(e);
-}
-base.insert_into_database();
+
+main();
