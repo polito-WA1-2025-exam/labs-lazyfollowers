@@ -1,16 +1,16 @@
 "use strict"
 
 // constructor function of poke_bowl 
-function Portion (name, price, max_protein, max_ingredient, increase_percentage_ingredients) {
+function Portion(id, name, price, max_protein, max_ingredient, increase_percentage_ingredients) {
     this.name = name;
-    this.id = undefined;
+    this.id = id;
 
     this.price = price;
     this.max_protein = max_protein;
     this.max_ingredient = max_ingredient;
     this.increase_percentage_ingredients = increase_percentage_ingredients;
 
-    this.insert_portion = ()=> {
+    this.insert_portion = () => {
         return new Promise((resolve, reject) => {
             let db = new DBconnection();
             let stmt = db.db.prepare("INSERT INTO Portions (name, base_price, amount_proteins, amount_ingredients, increase_percentage_ingredients) VALUES (?, ?, ?, ?, ?)");
@@ -19,6 +19,7 @@ function Portion (name, price, max_protein, max_ingredient, increase_percentage_
                     reject(err);
                 }
                 else {
+                    console.log("portion insert done");
                     resolve(this.lastID);
                 }
             });
@@ -46,6 +47,8 @@ function Portion (name, price, max_protein, max_ingredient, increase_percentage_
                 portion_to_return.max_protein = this.max_protein;
                 portion_to_return.max_ingredient = this.max_ingredient;
                 portion_to_return.increase_percentage_ingredients = this.increase_percentage_ingredients;
+                console.log("portion update done");
+
                 resolve(portion_to_return);
             });
             stmt.finalize();
@@ -67,6 +70,7 @@ function Portion (name, price, max_protein, max_ingredient, increase_percentage_
                     portion_to_return.max_protein = row.amount_proteins;
                     portion_to_return.max_ingredient = row.amount_ingredients;
                     portion_to_return.increase_percentage_ingredients = row.increase_percentage_ingredients;
+                    console.log("portion fetch done");
                     resolve(portion_to_return);
                 }
             });

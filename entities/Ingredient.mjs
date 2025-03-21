@@ -13,6 +13,7 @@ function Ingredient(name) {
                     reject(err);
                 }
                 else {
+                    console.log("ingredient insert done");
                     resolve(this.lastID);
                 }
             });
@@ -32,6 +33,8 @@ function Ingredient(name) {
                     let base_to_return = new Base();
                     base_to_return.id = row.id;
                     base_to_return.name = row.name;
+                    console.log("ingredient fetch done");
+
                     resolve(base_to_return);
                 }
             });
@@ -52,10 +55,13 @@ function Ingredient(name) {
                         reject(err);
                     }
                 }
-                let base_to_return = new Base();
-                base_to_return.id = this.id;
-                base_to_return.name = this.name;
-                resolve(base_to_return);
+                else {
+                    let base_to_return = new Base();
+                    base_to_return.id = this.id;
+                    base_to_return.name = this.name;
+                    console.log("ingredient update done");
+                    resolve(base_to_return);
+                }
             });
             stmtingredient.finalize();
             db.db.close();

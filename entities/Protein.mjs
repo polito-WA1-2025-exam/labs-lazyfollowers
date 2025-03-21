@@ -1,11 +1,11 @@
 "use strict"
 
 // constructor function of protein 
-function Protein (name) {
+function Protein(name) {
     this.name = name;
     this.id = undefined;
 
-    this.insert_protein = ()=> {
+    this.insert_protein = () => {
         return new Promise((resolve, reject) => {
             let db = new DBconnection();
             let stmt = db.db.prepare("INSERT INTO Proteins (name) VALUES (?)");
@@ -14,6 +14,7 @@ function Protein (name) {
                     reject(err);
                 }
                 else {
+                    console.log("protein insert done");
                     resolve(this.lastID);
                 }
             });
@@ -34,10 +35,13 @@ function Protein (name) {
                         reject(err);
                     }
                 }
-                let protein_to_return = new Protein();
-                protein_to_return.id = this.id;
-                protein_to_return.name = this.name;
-                resolve(protein_to_return);
+                else {
+                    let protein_to_return = new Protein();
+                    protein_to_return.id = this.id;
+                    protein_to_return.name = this.name;
+                    console.log("protein update done");
+                    resolve(protein_to_return);
+                }
             });
             stmt.finalize();
             db.db.close();
@@ -54,6 +58,7 @@ function Protein (name) {
                     let protein_to_return = new Protein();
                     protein_to_return.id = row.id;
                     protein_to_return.name = row.name;
+                    console.log("protein fetch done");
                     resolve(protein_to_return);
                 }
             });

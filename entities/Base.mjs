@@ -4,7 +4,6 @@ import DBconnection from "../migration/db.mjs";
 function Base(name) {
     this.id = undefined;
     this.name = name;
-    // TODO: fetch by id, retrieve Id after insertion (maybe use let insertedId = this.lastID after run)
 
     this.insert_base = () => {
         return new Promise((resolve, reject) => {
@@ -15,6 +14,7 @@ function Base(name) {
                     reject(err);
                 }
                 else {
+                    console.log("base insertion done");
                     resolve(this.lastID);
                 }
             });
@@ -36,10 +36,13 @@ function Base(name) {
                         reject(err);
                     }
                 }
-                let base_to_return = new Base();
-                base_to_return.id = this.id;
-                base_to_return.name = this.name;
-                resolve(base_to_return);
+                else {
+                    let base_to_return = new Base();
+                    base_to_return.id = this.id;
+                    base_to_return.name = this.name;
+                    console.log("base update done");
+                    resolve(base_to_return);
+                }
             });
             stmtbase.finalize();
             db.db.close();
@@ -58,6 +61,7 @@ function Base(name) {
                     let base_to_return = new Base();
                     base_to_return.id = row.id;
                     base_to_return.name = row.name;
+                    console.log("base fetch done");
                     resolve(base_to_return);
                 }
             });

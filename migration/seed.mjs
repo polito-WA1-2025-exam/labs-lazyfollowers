@@ -55,9 +55,11 @@ async function createTables() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       price REAL NOT NULL,
       base_id INTEGER,
+      order_id INTEGER,
       portion_id INTEGER,
       FOREIGN KEY (base_id) REFERENCES Bases(id),
-      FOREIGN KEY (portion_id) REFERENCES Portions(id)
+      FOREIGN KEY (order_id) REFERENCES Orders(id),
+    FOREIGN KEY (portion_id) REFERENCES Portions(id)
     );
 
     CREATE TABLE IF NOT EXISTS PokeProteins (
@@ -65,24 +67,15 @@ async function createTables() {
       protein_id INTEGER,
       FOREIGN KEY (poke_id) REFERENCES Poke(id),
       FOREIGN KEY (protein_id) REFERENCES Proteins(id),
-      FOREIGN KEY (protein_id) REFERENCES Proteins(id),
       PRIMARY KEY (poke_id, protein_id)
     );
 
     CREATE TABLE IF NOT EXISTS PokeIngredients (
       poke_id INTEGER,
       ingredient_id INTEGER,
-      FOREIGN KEY (poke_id) REFERENCES Poke(id),
-      FOREIGN KEY (ingredient_id) REFERENCES Ingredients(id),
-      PRIMARY KEY (poke_id, ingredient_id)
-    );
-
-    CREATE TABLE IF NOT EXISTS PokeOrders (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      poke_id INTEGER,
-      order_id INTEGER,
       FOREIGN KEY (poke_id) REFERENCES Poke(id),
-      FOREIGN KEY (order_id) REFERENCES Orders(id)
+      FOREIGN KEY (ingredient_id) REFERENCES Ingredients(id)
     );
 
     CREATE TABLE IF NOT EXISTS Orders (
@@ -178,14 +171,14 @@ async function main() {
     await seedTables();
     await queryTables();
 
-// Close the database connection
-db.close((err) => {
-    if (err) {
-        console.error('Error closing database:', err);
-    } else {
-        console.log('Database connection closed');
-    }
-});
+    // Close the database connection
+    db.close((err) => {
+        if (err) {
+            console.error('Error closing database:', err);
+        } else {
+            console.log('Database connection closed');
+        }
+    });
 }
 
 // Run the main function
