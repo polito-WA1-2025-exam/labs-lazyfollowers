@@ -65,9 +65,9 @@ async function createTables() {
     CREATE TABLE IF NOT EXISTS PokeProteins (
       poke_id INTEGER,
       protein_id INTEGER,
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
       FOREIGN KEY (poke_id) REFERENCES Poke(id),
-      FOREIGN KEY (protein_id) REFERENCES Proteins(id),
-      PRIMARY KEY (poke_id, protein_id)
+      FOREIGN KEY (protein_id) REFERENCES Proteins(id)
     );
 
     CREATE TABLE IF NOT EXISTS PokeIngredients (

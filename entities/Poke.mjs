@@ -90,20 +90,21 @@ function PokeBowl() {
     this.fetch_by_id = (id) => {
         return new Promise((resolve, reject) => {
             let db = new DBconnection();
-            let stmt = db.db.prepare("SELECT * FROM Pokebowl WHERE id = ?");
-            stmt.get(id, function (err, row) {
-                if (err) {
-                    reject(err);
+            let stmtpoke = db.db.prepare("SELECT * FROM Poke WHERE id = ?");
+            stmtpoke.get(id, function (err, row) {
+                if (err || row == undefined) {
+                    reject("poke not found");
                 } else {
                     let pokebowl_to_return = new PokeBowl();
                     pokebowl_to_return.id = row.id;
                     pokebowl_to_return.base = row.base;
                     pokebowl_to_return.price = row.price;
                     console.log("pokebowl fetch done");
+                    
                     resolve(pokebowl_to_return);
                 }
             });
-            stmt.finalize();
+            stmtpoke.finalize();
             db.db.close();
         });
     }
