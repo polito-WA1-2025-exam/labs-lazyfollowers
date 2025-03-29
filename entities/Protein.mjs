@@ -2,8 +2,8 @@
 import DBconnection from "../migration/db.mjs";
 
 // constructor function of protein 
-function Protein(name) {
-    this.name = name;
+function Protein() {
+    this.name = undefined;
     this.id = undefined;
     this.fetch_all = () => {
         return new Promise((resolve, reject) => {

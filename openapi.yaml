@@ -17,6 +17,8 @@ components:
       type: object
     CreateOrderRequest:
       properties:
+        total_price:
+          type: integer
         poke_ids:
           items:
             type: integer
@@ -68,6 +70,8 @@ components:
     UpdatePokeRequest:
       properties:
         base_id:
+          type: integer
+        price:
           type: integer
         ingredient_ids:
           items:

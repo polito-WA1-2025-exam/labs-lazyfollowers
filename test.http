@@ -14,7 +14,6 @@ GET http://localhost:8000/assets/portions
 
 ###
 
-
 POST http://localhost:8000/poke
 Content-Type: application/json
 
@@ -28,6 +27,18 @@ Content-Type: application/json
   ],
   "portion_id": 1,
   "protein_ids": [
+    1,
+    2
+  ]
+}
+
+###
+
+POST http://localhost:8000/order
+Content-Type: application/json
+
+{
+  "poke_ids": [
     1,
     2
   ]

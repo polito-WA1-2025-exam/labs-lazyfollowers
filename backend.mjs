@@ -38,22 +38,33 @@ app.use('/api-docs', serve, setup(swaggerDocument));
 
 
 // Define routes and web pages
-app.get('/', (req, res) =>	res.send('Hello World!')) ;
+app.get('/', (req, res) => res.send('Hello World!'));
 
-app.get('/assets/bases', async (req, res)=> {    
+app.get('/assets/bases', async (req, res) => {
     res.json(await new Base().fetch_all());
 })
-app.get('/assets/ingredients', async (req, res)=> {    
+app.get('/assets/ingredients', async (req, res) => {
     res.json(await new Ingredient().fetch_all());
 })
-app.get('/assets/proteins', async (req, res)=> {    
+app.get('/assets/proteins', async (req, res) => {
     res.json(await new Protein().fetch_all());
 })
-app.get('/assets/portions', async (req, res)=> {    
+app.get('/assets/portions', async (req, res) => {
     res.json(await new Portion().fetch_all());
 })
 
-app.post('/poke', async (req, res)=> {
+app.post('/order', async (req, res) => {
+    let order = new Order();
+    try {
+        order = await order.insert_order();
+        res.status(201).json({ "id": order.id, "total_price": order.total_price});
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+
+}
+);
+app.post('/poke', async (req, res) => {
     let poke = new PokeBowl();
     poke.base_id = req.body.base_id;
     poke.protein_ids = req.body.protein_ids;
@@ -62,7 +73,7 @@ app.post('/poke', async (req, res)=> {
     poke.price = req.body.price;
     try {
         let poke_id = await poke.insert_pokebowl_and_content();
-        res.status(201).json({ "id": poke_id});
+        res.status(201).json({ "id": poke_id });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }

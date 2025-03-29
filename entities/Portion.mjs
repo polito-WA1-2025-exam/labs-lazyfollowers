@@ -3,14 +3,13 @@ import DBconnection from "../migration/db.mjs";
 
 
 // constructor function of poke_bowl 
-function Portion(id, name, price, max_protein, max_ingredient, increase_percentage_ingredients) {
-    this.name = name;
+function Portion() {
+    this.name = undefined;
     this.id = id;
-
-    this.price = price;
-    this.max_protein = max_protein;
-    this.max_ingredient = max_ingredient;
-    this.increase_percentage_ingredients = increase_percentage_ingredients;
+    this.price = undefined;
+    this.max_protein = undefined;
+    this.max_ingredient = undefined;
+    this.increase_percentage_ingredients = undefined;
     this.fetch_all = () => {
         return new Promise((resolve, reject) => {
             let db = new DBconnection();

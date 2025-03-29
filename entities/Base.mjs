@@ -1,9 +1,9 @@
 "use strict"
 import DBconnection from "../migration/db.mjs";
 // constructor function of ingredient 
-function Base(name) {
+function Base() {
     this.id = undefined;
-    this.name = name;
+    this.name = undefined;
 
     this.fetch_all = () => {
         return new Promise((resolve, reject) => {

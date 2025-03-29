@@ -24,6 +24,30 @@ function PokeBowl() {
     this.price = undefined;
     this.portion_id = undefined; //id of portion
 
+    this.fetch_by_id = (id) => {
+        return new Promise((resolve, reject) => {
+            let db = new DBconnection();
+            let stmtingredient = db.db.prepare("SELECT * FROM Poke WHERE id = ?");
+            stmtingredient.get(id, function (err, row) {
+                if (err || row == undefined) {
+                    reject("pokebowl not found");
+                } else {
+                    let pokebowl_to_return = new Ingredient();
+                    pokebowl_to_return.id = row.id;
+                    pokebowl_to_return.price = row.price;
+                    pokebowl_to_return.base_id = row.base_id;
+                    pokebowl_to_return.order_id = row.order_id;
+                    pokebowl_to_return.portion_id = row.portion_id;
+                    console.log("pokebowl fetch done");
+
+                    resolve(pokebowl_to_return);
+                }
+            });
+            stmtingredient.finalize();
+            db.db.close();
+        });
+    }
+
     this.insert_pokebowl_and_content = async () => {
 
         if (this.price < 0) { // TODO: Calculate price with portion and ingredients ////////////////////////////////////
