@@ -1,3 +1,15 @@
 GET http://localhost:3000/assets/bases
 
 ###
+
+GET http://localhost:3000/assets/ingredients
+
+###
+
+GET http://localhost:3000/assets/proteins
+
+###
+
+GET http://localhost:3000/assets/portions
+
+###

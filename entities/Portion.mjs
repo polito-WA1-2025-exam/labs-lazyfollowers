@@ -11,7 +11,34 @@ function Portion(id, name, price, max_protein, max_ingredient, increase_percenta
     this.max_protein = max_protein;
     this.max_ingredient = max_ingredient;
     this.increase_percentage_ingredients = increase_percentage_ingredients;
-
+    this.fetch_all = () => {
+        return new Promise((resolve, reject) => {
+            let db = new DBconnection();
+            let stmt = db.db.prepare("SELECT * FROM Portions");
+            stmt.all(function (err, rows) {
+                if (err) {
+                    reject(err);
+                } else {
+                    let list_portion = [];
+                    for (let item of rows) {
+                        let portion = new Portion();
+                        portion.id = item.id;
+                        portion.name = item.name;
+                        // portion.price = item.base_price;
+                        // portion.max_protein = item.amount_proteins;
+                        // portion.max_ingredient = item.amount_ingredients;
+                        // portion.increase_percentage_ingredients = item.increase_percentage_ingredients;
+                        list_portion.push(portion)
+                    }
+                    console.log("portion fetches done");
+                    resolve(list_portion);
+                }
+            });
+            stmt.finalize();
+            db.db.close();
+        }
+        );
+    }
     this.fetch_by_id = (id) => {
         return new Promise((resolve, reject) => {
             let db = new DBconnection();

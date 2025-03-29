@@ -8,6 +8,13 @@ components:
         name:
           type: string
       type: object
+    Ingredient:
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      type: object
     CreateOrderRequest:
       properties:
         poke_ids:
@@ -89,6 +96,20 @@ paths:
                 type: array
           description: A list of bases
       summary: Get list of bases
+      tags:
+        - assets
+  /assets/ingredients:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Ingredient'
+                type: array
+          description: A list of ingredients
+      summary: Get list of ingredients
       tags:
         - assets
   /assets/portions:
