@@ -5,11 +5,10 @@ function Order () {
     this.list_of_poke_bowl = [];
     this.id = undefined;
 
-//TODO: 
-
-    this.add_Poke = (Pokebowl) => this.list_of_poke_bowl.push(Pokebowl);
-    this.remove_Poke = (criteria, value) => this.list_of_poke_bowl.filter(Pokebowl => Pokebowl.criteria != value);
-    this.total_price = () => console.log("TO DO : calculate price");
+    // DON'T USE, WORK IN PROGRESS
+    // this.add_Poke = (Pokebowl) => this.list_of_poke_bowl.push(Pokebowl);
+    // this.remove_Poke = (criteria, value) => this.list_of_poke_bowl.filter(Pokebowl => Pokebowl.criteria != value);
+    // this.total_price = () => console.log("TO DO : calculate price");
 }
 
 

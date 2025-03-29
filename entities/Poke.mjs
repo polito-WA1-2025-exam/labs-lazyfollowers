@@ -19,95 +19,96 @@ function PokeBowl() {
     this.price = undefined;
     this.portion_id = undefined; //id of portion
 
+    // DON'T USE, WORK IN PROGRESS
 
-    this.insert_pokebowl = () => {
-        return new Promise((resolve, reject) => {
-            let db = new DBconnection();
-            let stmt = db.db.prepare("INSERT INTO Poke (base_id, price ,portion_id) VALUES (?, ?, ?)");
-            if (this.base == undefined || this.price == undefined || this.portion == undefined) {
-                reject("base or price or portion is not defined");
-            }
-            if (this.base.id == undefined || this.portion.id == undefined) {
-                reject("base id or portion id is not defined");
-            }
-            this.base.fetch_by_id(this.base_id)
-            .catch((err) => {reject("base not found"+err)});
+    // this.insert_pokebowl = () => {
+    //     return new Promise((resolve, reject) => {
+    //         let db = new DBconnection();
+    //         let stmt = db.db.prepare("INSERT INTO Poke (base_id, price ,portion_id) VALUES (?, ?, ?)");
+    //         if (this.base == undefined || this.price == undefined || this.portion == undefined) {
+    //             reject("base or price or portion is not defined");
+    //         }
+    //         if (this.base.id == undefined || this.portion.id == undefined) {
+    //             reject("base id or portion id is not defined");
+    //         }
+    //         this.base.fetch_by_id(this.base_id)
+    //         .catch((err) => {reject("base not found"+err)});
 
-            this.portion.fetch_by_id(this.portion_id)
-            .catch((err) => {reject("base not found"+err)});
+    //         this.portion.fetch_by_id(this.portion_id)
+    //         .catch((err) => {reject("base not found"+err)});
 
-            this.protein.fetch_by_ids(this.protein_ids)
-            .catch((err) => {reject("protein not found"+err)});
-
-
-            this.ingredient.fetch_by_ids(this.ingredient_ids)
-            .catch((err) => {reject("protein not found"+err)});
+    //         this.protein.fetch_by_ids(this.protein_ids)
+    //         .catch((err) => {reject("protein not found"+err)});
 
 
-            if (this.price < 0) {
-                reject("price is negative");
-            }
+    //         this.ingredient.fetch_by_ids(this.ingredient_ids)
+    //         .catch((err) => {reject("protein not found"+err)});
 
-            stmt.run(this.base.id, this.price, this.portion.id, function (err) {
-                if (err) {
-                    reject(err);
-                }
-                else {
-                    console.log("pokebowl insert done");
-                    resolve(this.lastID);
-                }
-            });
-            stmt.finalize();
-            db.db.close();
-        });
-    }
-    this.update_pokebowl = async () => {
-        return new Promise((resolve, reject) => {
-            let db = new DBconnection();
-            let stmt = db.db.prepare("UPDATE Pokebowl SET (base_id, price) = (?, ?) WHERE id = ?");
-            stmt.run(this.base.id, this.price, this.id, function (err) {
-                if (err) {
-                    if (this.id == undefined || this.base == undefined || this.price == undefined) {
-                        reject("id or base or price is not defined");
-                    }
-                    else {
-                        reject(err);
-                    }
-                }
-                else {
-                    let pokebowl_to_return = new PokeBowl();
-                    pokebowl_to_return.id = this.id;
-                    pokebowl_to_return.base = this.base;
-                    pokebowl_to_return.price = this.price;
-                    console.log("pokebowl update done");
-                    resolve(pokebowl_to_return);
-                }
-            });
-            stmt.finalize();
-            db.db.close();
-        });
-    }
-    this.fetch_by_id = (id) => {
-        return new Promise((resolve, reject) => {
-            let db = new DBconnection();
-            let stmtpoke = db.db.prepare("SELECT * FROM Poke WHERE id = ?");
-            stmtpoke.get(id, function (err, row) {
-                if (err || row == undefined) {
-                    reject("poke not found");
-                } else {
-                    let pokebowl_to_return = new PokeBowl();
-                    pokebowl_to_return.id = row.id;
-                    pokebowl_to_return.base = row.base;
-                    pokebowl_to_return.price = row.price;
-                    console.log("pokebowl fetch done");
+
+    //         if (this.price < 0) {
+    //             reject("price is negative");
+    //         }
+
+    //         stmt.run(this.base.id, this.price, this.portion.id, function (err) {
+    //             if (err) {
+    //                 reject(err);
+    //             }
+    //             else {
+    //                 console.log("pokebowl insert done");
+    //                 resolve(this.lastID);
+    //             }
+    //         });
+    //         stmt.finalize();
+    //         db.db.close();
+    //     });
+    // }
+    // this.update_pokebowl = async () => {
+    //     return new Promise((resolve, reject) => {
+    //         let db = new DBconnection();
+    //         let stmt = db.db.prepare("UPDATE Pokebowl SET (base_id, price) = (?, ?) WHERE id = ?");
+    //         stmt.run(this.base.id, this.price, this.id, function (err) {
+    //             if (err) {
+    //                 if (this.id == undefined || this.base == undefined || this.price == undefined) {
+    //                     reject("id or base or price is not defined");
+    //                 }
+    //                 else {
+    //                     reject(err);
+    //                 }
+    //             }
+    //             else {
+    //                 let pokebowl_to_return = new PokeBowl();
+    //                 pokebowl_to_return.id = this.id;
+    //                 pokebowl_to_return.base = this.base;
+    //                 pokebowl_to_return.price = this.price;
+    //                 console.log("pokebowl update done");
+    //                 resolve(pokebowl_to_return);
+    //             }
+    //         });
+    //         stmt.finalize();
+    //         db.db.close();
+    //     });
+    // }
+    // this.fetch_by_id = (id) => {
+    //     return new Promise((resolve, reject) => {
+    //         let db = new DBconnection();
+    //         let stmtpoke = db.db.prepare("SELECT * FROM Poke WHERE id = ?");
+    //         stmtpoke.get(id, function (err, row) {
+    //             if (err || row == undefined) {
+    //                 reject("poke not found");
+    //             } else {
+    //                 let pokebowl_to_return = new PokeBowl();
+    //                 pokebowl_to_return.id = row.id;
+    //                 pokebowl_to_return.base = row.base;
+    //                 pokebowl_to_return.price = row.price;
+    //                 console.log("pokebowl fetch done");
                     
-                    resolve(pokebowl_to_return);
-                }
-            });
-            stmtpoke.finalize();
-            db.db.close();
-        });
-    }
+    //                 resolve(pokebowl_to_return);
+    //             }
+    //         });
+    //         stmtpoke.finalize();
+    //         db.db.close();
+    //     });
+    // }
 
 
 }
