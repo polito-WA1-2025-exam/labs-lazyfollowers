@@ -4,12 +4,12 @@
 // import path from 'path';
 // import yaml from 'js-yaml';
 // import morgan from 'morgan';
-const express = require('express');
-const swaggerUi = require('swagger-ui-express');
-const fs = require('fs');
-const path = require('path');
-const yaml = require('js-yaml');
-const morgan = require('morgan');
+import express, { json } from 'express';
+import { serve, setup } from 'swagger-ui-express';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import { load } from 'js-yaml';
+import morgan from 'morgan';
 
 //back-end imports
 // import PokeBowl from "./entities/Poke.mjs";
@@ -18,7 +18,7 @@ const morgan = require('morgan');
 // import Order from "./entities/Order.mjs";
 // import Portion from "./entities/Portion.mjs";
 // import OrderService from "./service/OrderService.mjs";
-import Base from "./entities/Base.mjs";
+// import Base from "./entities/Base.mjs";
 // import PokeIngredients from "./contents/PokeIngredients.mjs";
 // import PokeProteins from "./contents/PokeProteins.mjs";
 
@@ -26,14 +26,14 @@ import Base from "./entities/Base.mjs";
 const app = express();
 const port = 3000;
 
-app.use(express.json());
+app.use(json());
 app.use(morgan('dev'))
 
 // Load existing Swagger YAML file
-const swaggerFile = path.join(__dirname, 'openapi.yaml');
-const swaggerDocument = yaml.load(fs.readFileSync(swaggerFile, 'utf8'));
+const swaggerFile = join('openapi.yaml');
+const swaggerDocument = load(readFileSync(swaggerFile, 'utf8'));
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use('/api-docs', serve, setup(swaggerDocument));
 
 
 // Define routes and web pages
