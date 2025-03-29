@@ -4,6 +4,30 @@ import DBconnection from "../migration/db.mjs";
 function Ingredient(name) {
     this.id = undefined;
     this.name = name;
+    this.fetch_all = () => {
+        return new Promise((resolve, reject) => {
+            let db = new DBconnection();
+            let stmtingredient = db.db.prepare("SELECT * FROM Ingredients");
+            stmtingredient.all(function (err, rows) {
+                if (err) {
+                    reject(err);
+                } else {
+                    let list_ingredient = [];
+                    for (let item of rows) {
+                        let ingredient = new Ingredient();
+                        ingredient.id = item.id;
+                        ingredient.name = item.name;
+                        list_ingredient.push(ingredient)
+                    }
+                    console.log("ingredients fetches done");
+                    resolve(list_ingredient);
+                }
+            });
+            stmtingredient.finalize();
+            db.db.close();
+
+        });
+    }
     this.fetch_by_id = (id) => {
         return new Promise((resolve, reject) => {
             let db = new DBconnection();

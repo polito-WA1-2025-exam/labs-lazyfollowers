@@ -5,6 +5,29 @@ import DBconnection from "../migration/db.mjs";
 function Protein(name) {
     this.name = name;
     this.id = undefined;
+    this.fetch_all = () => {
+        return new Promise((resolve, reject) => {
+            let db = new DBconnection();
+            let stmt = db.db.prepare("SELECT * FROM Proteins");
+            stmt.all(function (err, rows) {
+                if (err) {
+                    reject(err);
+                } else {
+                    let list_protein = [];
+                    for (let item of rows) {
+                        let protein = new Protein();
+                        protein.id = item.id;
+                        protein.name = item.name;
+                        list_protein.push(protein)
+                    }
+                    console.log("proteins fetches done");
+                    resolve(list_protein);
+                }
+            });
+            stmt.finalize();
+            db.db.close();
+        });
+    }
     this.fetch_by_id = (id) => {
         return new Promise((resolve, reject) => {
             let db = new DBconnection();
