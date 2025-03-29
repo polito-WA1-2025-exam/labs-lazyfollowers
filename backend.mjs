@@ -56,7 +56,7 @@ app.get('/assets/portions', async (req, res)=> {
 // /assets/protein
 
 
-app.listen(port, () => {
+app.listen(8000, () => {
     console.log(`Server running at http://localhost:${port}`);
     console.log(`Swagger docs available at http://localhost:${port}/api-docs`);
 });
