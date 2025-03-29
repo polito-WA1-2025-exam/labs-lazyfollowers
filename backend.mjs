@@ -10,6 +10,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import { load } from 'js-yaml';
 import morgan from 'morgan';
+import { query, body, validationResult } from 'express-validator';
 
 //back-end imports
 import PokeBowl from "./entities/Poke.mjs";
@@ -51,9 +52,22 @@ app.get('/assets/proteins', async (req, res)=> {
 app.get('/assets/portions', async (req, res)=> {    
     res.json(await new Portion().fetch_all());
 })
-// /assets/bases
-// /assets/portions
-// /assets/protein
+
+app.post('/poke', async (req, res)=> {
+    let poke = new PokeBowl();
+    poke.base_id = req.body.base_id;
+    poke.protein_ids = req.body.protein_ids;
+    poke.ingredient_ids = req.body.ingredient_ids;
+    poke.portion_id = req.body.portion_id;
+    poke.price = req.body.price;
+    try {
+        let poke_id = await poke.insert_pokebowl_and_content();
+        res.status(201).json({ "id": poke_id});
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+);
 
 
 app.listen(8000, () => {

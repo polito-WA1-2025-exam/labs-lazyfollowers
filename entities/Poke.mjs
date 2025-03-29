@@ -2,6 +2,11 @@
 
 import Portion from "./Portion.mjs";
 import DBconnection from "../migration/db.mjs";
+import Base from "./Base.mjs";
+import Protein from "./Protein.mjs";
+import Ingredient from "./Ingredient.mjs";
+import PokeIngredients from "../contents/PokeIngredients.mjs";
+import PokeProteins from "../contents/PokeProteins.mjs";
 
 // constructor function of poke_bowl 
 function PokeBowl() {
@@ -19,49 +24,54 @@ function PokeBowl() {
     this.price = undefined;
     this.portion_id = undefined; //id of portion
 
-    // DON'T USE, WORK IN PROGRESS
+    this.insert_pokebowl_and_content = async () => {
 
-    // this.insert_pokebowl = () => {
-    //     return new Promise((resolve, reject) => {
-    //         let db = new DBconnection();
-    //         let stmt = db.db.prepare("INSERT INTO Poke (base_id, price ,portion_id) VALUES (?, ?, ?)");
-    //         if (this.base == undefined || this.price == undefined || this.portion == undefined) {
-    //             reject("base or price or portion is not defined");
-    //         }
-    //         if (this.base.id == undefined || this.portion.id == undefined) {
-    //             reject("base id or portion id is not defined");
-    //         }
-    //         this.base.fetch_by_id(this.base_id)
-    //         .catch((err) => {reject("base not found"+err)});
+        if (this.price < 0) { // TODO: Calculate price with portion and ingredients ////////////////////////////////////
+            throw new Error("price is negative");
+        }
+        await new Base().fetch_by_id(this.base_id)
+            .catch((err) => { throw new Error(err) });
+        await new Portion().fetch_by_id(this.portion_id)
+            .catch((err) => { throw new Error(err) });
 
-    //         this.portion.fetch_by_id(this.portion_id)
-    //         .catch((err) => {reject("base not found"+err)});
+        for (let i = 0; i < this.protein_ids.length; i++) {
+            await new Protein().fetch_by_id(this.protein_ids[i])
+                .catch((err) => { throw new Error(err) });
+        }
+        for (let i = 0; i < this.ingredient_ids.length; i++) {
+            await new Ingredient().fetch_by_id(this.ingredient_ids[i])
+                .catch((err) => { throw new Error(err) });
+        }
 
-    //         this.protein.fetch_by_ids(this.protein_ids)
-    //         .catch((err) => {reject("protein not found"+err)});
+        this.id = await this.insert_pokebowl();
 
+        for (let i = 0; i < this.protein_ids.length; i++) {
+            await new PokeProteins().insert_protein(this.id, this.protein_ids[i]).catch((err) => { console.log(err) });
+        }
+        for (let i = 0; i < this.ingredient_ids.length; i++) {
+            await new PokeIngredients().insert_ingredient(this.id, this.ingredient_ids[i]).catch((err) => { console.log(err) });
+        }
+        return this.id;
+    }
+    this.insert_pokebowl = async () => {
+        return new Promise((resolve, reject) => {
 
-    //         this.ingredient.fetch_by_ids(this.ingredient_ids)
-    //         .catch((err) => {reject("protein not found"+err)});
+            let db = new DBconnection();
 
-
-    //         if (this.price < 0) {
-    //             reject("price is negative");
-    //         }
-
-    //         stmt.run(this.base.id, this.price, this.portion.id, function (err) {
-    //             if (err) {
-    //                 reject(err);
-    //             }
-    //             else {
-    //                 console.log("pokebowl insert done");
-    //                 resolve(this.lastID);
-    //             }
-    //         });
-    //         stmt.finalize();
-    //         db.db.close();
-    //     });
-    // }
+            let stmt = db.db.prepare("INSERT INTO Poke (base_id, price ,portion_id) VALUES (?, ?, ?)");
+            stmt.run(this.base_id, this.price, this.portion_id, function (err) {
+                if (err) {
+                    reject(err);
+                }
+                else {
+                    console.log("pokebowl insert done");
+                    resolve(this.lastID);
+                }
+            });
+            stmt.finalize();
+            db.db.close();
+        });
+    }
     // this.update_pokebowl = async () => {
     //     return new Promise((resolve, reject) => {
     //         let db = new DBconnection();
@@ -101,7 +111,7 @@ function PokeBowl() {
     //                 pokebowl_to_return.base = row.base;
     //                 pokebowl_to_return.price = row.price;
     //                 console.log("pokebowl fetch done");
-                    
+
     //                 resolve(pokebowl_to_return);
     //             }
     //         });

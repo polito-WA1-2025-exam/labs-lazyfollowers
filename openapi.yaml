@@ -33,6 +33,8 @@ components:
       properties:
         base_id:
           type: integer
+        price:
+          type: integer
         ingredient_ids:
           items:
             type: integer

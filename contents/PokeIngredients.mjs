@@ -67,13 +67,6 @@ function PokeIngredients() {
     }
     this.insert_ingredient = async (poke_id, ingredient_id) => {
         // RETURN : id of the line inserted or error if poke or ingredient does not exist
-        try {
-            await new Poke().fetch_by_id(poke_id)
-            await new Ingredient().fetch_by_id(ingredient_id)
-        }
-        catch (e) {
-            throw new Error(e);
-        }
         return new Promise((resolve, reject) => {
             let db = new DBconnection();
             let stmt = db.db.prepare("INSERT INTO PokeIngredients (poke_id,ingredient_id) VALUES (?,?)");

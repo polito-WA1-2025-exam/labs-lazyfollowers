@@ -44,8 +44,8 @@ function Portion(id, name, price, max_protein, max_ingredient, increase_percenta
             let db = new DBconnection();
             let stmt = db.db.prepare("SELECT * FROM Portions WHERE id = ?");
             stmt.get(id, function (err, row) {
-                if (err) {
-                    reject(err);
+                if (err || row == undefined) {
+                    reject("portion not found");
                 } else {
                     let portion_to_return = new Portion();
                     portion_to_return.id = row.id;

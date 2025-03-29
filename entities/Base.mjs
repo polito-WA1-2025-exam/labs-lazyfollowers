@@ -34,8 +34,8 @@ function Base(name) {
             let db = new DBconnection();
             let stmtbase = db.db.prepare("SELECT * FROM Bases WHERE id = ?");
             stmtbase.get(id, function (err, row) {
-                if (err) {
-                    reject(err);
+                if (err || row == undefined) {
+                    reject("base not found");
                 } else {
                     let base_to_return = new Base();
                     base_to_return.id = row.id;

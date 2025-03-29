@@ -3,7 +3,7 @@ import DBconnection from "../migration/db.mjs";
 import Protein from "../entities/Protein.mjs";
 import Poke from "../entities/Poke.mjs";
 // constructor function of Pokeproteins
-function Pokeproteins() {
+function PokeProteins() {
     this.id = undefined;
 
     // this.check_line_in_table = (poke_id, protein_id) => {
@@ -66,14 +66,6 @@ function Pokeproteins() {
         });
     }
     this.insert_protein = async (poke_id, protein_id) => {
-        // RETURN : id of the line inserted or error if poke or protein does not exist
-        try {
-            await new Poke().fetch_by_id(poke_id)
-            await new Protein().fetch_by_id(protein_id)
-        }
-        catch (e) {
-            throw new Error(e);
-        }
         return new Promise((resolve, reject) => {
             let db = new DBconnection();
             let stmt = db.db.prepare("INSERT INTO Pokeproteins (poke_id,protein_id) VALUES (?,?)");
@@ -110,4 +102,4 @@ function Pokeproteins() {
     }
 }
 
-export default Pokeproteins;
+export default PokeProteins;

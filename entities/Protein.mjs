@@ -33,8 +33,8 @@ function Protein(name) {
             let db = new DBconnection();
             let stmt = db.db.prepare("SELECT * FROM Proteins WHERE id = ?");
             stmt.get(id, function (err, row) {
-                if (err) {
-                    reject(err);
+                if (err || row == undefined) {
+                    reject("protein not found");
                 } else {
                     let protein_to_return = new Protein();
                     protein_to_return.id = row.id;

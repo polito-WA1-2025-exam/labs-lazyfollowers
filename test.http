@@ -1,15 +1,34 @@
-GET http://localhost:3000/assets/bases
+GET http://localhost:8000/assets/bases
 
 ###
 
-GET http://localhost:3000/assets/ingredients
+GET http://localhost:8000/assets/ingredients
 
 ###
 
-GET http://localhost:3000/assets/proteins
+GET http://localhost:8000/assets/proteins
 
 ###
 
-GET http://localhost:3000/assets/portions
+GET http://localhost:8000/assets/portions
 
 ###
+
+
+POST http://localhost:8000/poke
+Content-Type: application/json
+
+{
+  "base_id": 1,
+  "price": 3,
+  "ingredient_ids": [
+    1,
+    2,
+    2
+  ],
+  "portion_id": 1,
+  "protein_ids": [
+    1,
+    2
+  ]
+}
