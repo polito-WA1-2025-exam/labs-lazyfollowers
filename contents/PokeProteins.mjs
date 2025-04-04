@@ -65,6 +65,22 @@ function PokeProteins() {
     //         db.db.close();
     //     });
     // }
+    this.delete_proteins = async (poke_id) => {
+        return new Promise((resolve, reject) => {
+            let db = new DBconnection();
+            let stmt = db.db.prepare("DELETE FROM Pokeproteins WHERE poke_id = ?");
+            stmt.run(poke_id, function (err) {
+                if (err || this.lastID == 0) {
+                    reject("protein not in pokebowl");
+                }
+                else {
+                    resolve("protein delete done");
+                }
+            });
+            stmt.finalize();
+            db.db.close();
+        });
+    }
     this.insert_protein = async (poke_id, protein_id) => {
         return new Promise((resolve, reject) => {
             let db = new DBconnection();

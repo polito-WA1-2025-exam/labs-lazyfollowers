@@ -24,6 +24,75 @@ function PokeBowl() {
     this.price = undefined;
     this.portion_id = undefined; //id of portion
 
+    this.modify_by_id = async (poke_id) => {
+        console.log(poke_id);
+        let poke_verification = await this.fetch_by_id(poke_id)
+            .catch((err) => { throw new Error(err) });
+        console.log(poke_id_verification);
+        if (poke_verification.id != poke_id) {
+            throw new Error("poke_id not found");
+        }
+
+        if (this.price < 0) { // TODO: Calculate price with portion and ingredients ////////////////////////////////////
+            throw new Error("price is negative");
+        }
+        await new Base().fetch_by_id(this.base_id)
+            .catch((err) => { throw new Error(err) });
+        await new Portion().fetch_by_id(this.portion_id)
+            .catch((err) => { throw new Error(err) });
+
+        for (let i = 0; i < this.protein_ids.length; i++) {
+            await new Protein().fetch_by_id(this.protein_ids[i])
+                .catch((err) => { throw new Error(err) });
+        }
+        for (let i = 0; i < this.ingredient_ids.length; i++) {
+            await new Ingredient().fetch_by_id(this.ingredient_ids[i])
+                .catch((err) => { throw new Error(err) });
+        }
+
+        // this.ingredients_ids.map((ingredient_id) => {
+        //     if (this.ingredient_ids.length > 5) {
+        //         throw new Error("too many ingredients");
+        //     }
+        // });
+
+        await new PokeProteins().delete_proteins(poke_id).catch((err) => { console.log(err) });
+        await new PokeIngredients().delete_ingredients(poke_id).catch((err) => { console.log(err) });
+
+        for (let i = 0; i < this.protein_ids.length; i++) {
+            await new PokeProteins().insert_protein(this.id, this.protein_ids[i]).catch((err) => { console.log(err) });
+        }
+        for (let i = 0; i < this.ingredient_ids.length; i++) {
+            await new PokeIngredients().insert_ingredient(this.id, this.ingredient_ids[i]).catch((err) => { console.log(err) });
+        }
+
+        return new Promise((resolve, reject) => {
+            let db = new DBconnection();
+            let stmt = db.db.prepare("UPDATE Poke SET (base_id, price, portion_id) = (?, ?, ?) WHERE id = ?");
+            stmt.run(this.base_id, this.price, this.portion_id, poke_id, function (err) {
+                if (err) {
+                    if (poke_id == undefined || this.base_id == undefined || this.price == undefined || this.portion_id == undefined) {
+                        reject("id or base or price or portion is not defined");
+                    }
+                    else {
+                        reject(err);
+                    }
+                }
+                else {
+                    let pokebowl_to_return = new PokeBowl();
+                    pokebowl_to_return.id = poke_id;
+                    pokebowl_to_return.base_id = this.base_id;
+                    pokebowl_to_return.price = this.price;
+                    console.log("pokebowl update done");
+                    resolve(pokebowl_to_return);
+                }
+            });
+            stmt.finalize();
+            db.db.close();
+        }
+        );
+    }
+
     this.fetch_by_id = (id) => {
         return new Promise((resolve, reject) => {
             let db = new DBconnection();
