@@ -84,6 +84,23 @@ function PokeIngredients() {
         });
     }
 
+    this.delete_ingredients = async (poke_id) => {
+    
+        return new Promise((resolve, reject) => {
+            let db = new DBconnection();
+            let stmt = db.db.prepare("DELETE FROM PokeIngredients WHERE poke_id = ?");
+            stmt.run(poke_id, function (err) {
+                if (err || this.lastID == 0) {
+                    reject("ingredient not in pokebowl");
+                }
+                else {
+                    resolve("ingredient delete done");
+                }
+            });
+            stmt.finalize();
+            db.db.close();
+        });
+    }
     // this.delete_ingredient = async (id_to_delete) => {
     //     return new Promise((resolve, reject) => {
     //         let db = new DBconnection();

@@ -5,7 +5,7 @@ import DBconnection from "../migration/db.mjs";
 // constructor function of poke_bowl 
 function Portion() {
     this.name = undefined;
-    this.id = id;
+    this.id = undefined;
     this.price = undefined;
     this.max_protein = undefined;
     this.max_ingredient = undefined;
