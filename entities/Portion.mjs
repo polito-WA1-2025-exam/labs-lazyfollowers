@@ -23,10 +23,10 @@ function Portion() {
                         let portion = new Portion();
                         portion.id = item.id;
                         portion.name = item.name;
-                        // portion.price = item.base_price;
-                        // portion.max_protein = item.amount_proteins;
-                        // portion.max_ingredient = item.amount_ingredients;
-                        // portion.increase_percentage_ingredients = item.increase_percentage_ingredients;
+                        portion.price = item.base_price;
+                        portion.max_protein = item.amount_proteins;
+                        portion.max_ingredient = item.amount_ingredients;
+                        portion.increase_percentage_ingredients = item.increase_percentage_ingredients;
                         list_portion.push(portion)
                     }
                     console.log("portion fetches done");
