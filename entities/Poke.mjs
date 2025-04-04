@@ -92,6 +92,28 @@ function PokeBowl() {
         );
     }
 
+    this.update_order_id = async (poke_id) => {
+        return new Promise((resolve, reject) => {
+            let db = new DBconnection();
+            let stmt = db.db.prepare("UPDATE Poke SET order_id = ? WHERE id = ?");
+            stmt.run(this.order_id, poke_id, function (err) {
+                if (err) {
+                    if (this.order_id == undefined || poke_id == undefined) {
+                        reject("id or order_id is not defined");
+                    }
+                    else {
+                        reject(err);
+                    }
+                }
+                else {
+                    resolve("pokebowl update done");
+                }
+            });
+            stmt.finalize();
+            db.db.close();
+        });
+    }
+
     this.fetch_by_id = (id) => {
         return new Promise((resolve, reject) => {
             let db = new DBconnection();

@@ -56,6 +56,10 @@ app.use('/api-docs', serve, setup(swaggerDocument));
 // Define routes and web pages
 app.get('/', (req, res) => res.send('Hello World!'));
 
+app.get('/assets/orders', async (req, res) => {
+    res.json(await new Order().fetch_all());
+}
+);
 app.get('/assets/bases', async (req, res) => {
     res.json(await new Base().fetch_all());
 })
@@ -71,13 +75,15 @@ app.get('/assets/portions', async (req, res) => {
 
 app.post('/order', async (req, res) => {
     let order = new Order();
+    order.poke_ids = req.body.poke_ids;
+    order.total_price = req.body.total_price;
     try {
-        order = await order.insert_order();
-        res.status(201).json({ "id": order.id, "total_price": order.total_price });
+        let order_id = await order.insert_order_and_content();
+        console.log(order);
+        res.status(201).json({ "id": order_id});
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
-
 }
 );
 app.post('/poke', async (req, res) => {

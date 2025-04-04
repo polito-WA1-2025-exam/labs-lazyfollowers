@@ -4,12 +4,34 @@ import DBconnection from "../migration/db.mjs";
 
 // constructor function of order 
 function Order() {
-    this.poke_ids = [];
     this.id = undefined;
     this.total_price = undefined
-
-    this.insert_order = async () => {
-        if (this.total_price < 0) { // TODO: Calculate price with portion and ingredients ////////////////////////////////////
+    this.fetch_all = () => {
+        return new Promise((resolve, reject) => {
+            let db = new DBconnection();
+            let stmt = db.db.prepare("SELECT * FROM Orders");
+            stmt.all(function (err, rows) {
+                if (err) {
+                    reject(err);
+                } else {
+                    let list_order = [];
+                    for (let item of rows) {
+                        let order = new Order();
+                        order.id = item.id;
+                        order.total_price = item.total_price;
+                        list_order.push(order)
+                    }
+                    console.log("orders fetches done");
+                    console.log(list_order);
+                    resolve(list_order);
+                }
+            });
+            stmt.finalize();
+            db.db.close();
+        });
+    }
+    this.insert_order_and_content = async () => {
+        if (this.total_price <= 0) { // TODO: Calculate price with portion and ingredients ////////////////////////////////////
             throw new Error("price is negative");
         }
         for (let i = 0; i < this.poke_ids.length; i++) {
@@ -19,19 +41,19 @@ function Order() {
         this.id = await this.insert_order();
 
         for (let i = 0; i < this.poke_ids.length; i++) {
-            //TODO: INSERT ID OF ORDER IN each Poke
+            let poke_with_order = new PokeBowl();
+            poke_with_order.order_id = this.id;
+            await poke_with_order.update_order_id(this.poke_ids[i])
+                .catch((err) => { throw new Error(err) });
         }
-        let order_to_return = new Order;
-        order_to_return.id = this.lastID;
-        order_to_return.total_price = this.total_price
-        resolve(order_to_return);
+        return this.id;
     }
     this.insert_order = async () => {
         return new Promise((resolve, reject) => {
 
             let db = new DBconnection();
 
-            let stmt = db.db.prepare("INSERT INTO Order (total_price) VALUES (?)");
+            let stmt = db.db.prepare("INSERT INTO Orders (total_price) VALUES (?)");
             stmt.run(this.total_price, function (err) {
                 if (err) {
                     reject(err);
