@@ -11,37 +11,39 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { IngredientSelector } from "./IngredientSelector";
+import { ProteinSelector } from "./ProteinSelector";
+
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import usePokeStore from "@/store/usePokeStore";
 import { usePokeService } from "@/services/usePokeService";
 
 export function CreatePokeModal() {
-    const { isCreateModalOpen, setCreateModalOpen, draftOrder, updateDraftOrder, addIngredient, removeIngredient, resetDraftOrder } = usePokeStore();
-    const { createOrder, fetchIngredients } = usePokeService();
-    const [availableIngredients, setAvailableIngredients] = useState([]);
-    const [bases, setBases] = useState([]);
-    const [proteins, setProteins] = useState([]);
+    const {
+        bases,
+        ingredients,
+        portions,
+        isCreateModalOpen,
+        setCreateModalOpen,
+        draftPoke,
+        updatedraftPoke,
+        resetdraftPoke
+    } = usePokeStore();
+    const { createOrder } = usePokeService();
+
     const [isSubmitting, setIsSubmitting] = useState(false);
 
 
-    const handleIngredientToggle = (ingredient, isSelected) => {
-        if (isSelected) {
-            addIngredient(ingredient);
-        } else {
-            removeIngredient(ingredient.id);
-        }
-    };
 
     const handleSubmit = async () => {
-        if (!draftOrder.base || !draftOrder.protein) {
+        if (!draftPoke.base || !draftPoke.proteins) {
             return; // Validation failed
         }
 
         setIsSubmitting(true);
         try {
-            await createOrder(draftOrder);
+            await createOrder(draftPoke);
             setCreateModalOpen(false);
-            resetDraftOrder();
+            resetdraftPoke();
         } catch (error) {
             console.error("Failed to create order:", error);
         } finally {
@@ -59,63 +61,53 @@ export function CreatePokeModal() {
                 <div className="grid gap-6 py-4">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
+                            <Label>Select Portion Size</Label>
+                            <RadioGroup
+                                value={draftPoke.portion?.id}
+                                onValueChange={(value) => updatedraftPoke('portion', portions.find((el) => el.id == value))}
+                                className="flex space-x-4"
+                            >
+                                {portions.map((portion) => {
+                                    return <div key={"portion" + portion.id} className="flex items-center space-x-2">
+                                        <RadioGroupItem value={portion.id} id={"portion-" + portion.id} />
+                                        <Label htmlFor={"portion-" + portion.id}>{portion.name}</Label>
+                                    </div>
+                                })}
+                            </RadioGroup>
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Details</Label>
+                            <p className={draftPoke.ingredients.length > draftPoke.portion?.max_ingredient
+                                ? "bg-yellow-400 rounded-xl p-1 ps-3" : ""}>
+                                Ingredients count: {draftPoke.portion?.max_ingredient}
+                            </p>
+                            <p className={draftPoke.proteins.length > draftPoke.portion?.max_protein
+                                ? "bg-yellow-400 rounded-xl p-1 ps-3" : ""}>
+                                Proteins count: {draftPoke.portion?.max_protein}
+                            </p>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
                             <Label htmlFor="base">Select Base</Label>
                             <Select
-                                value={draftOrder.base}
-                                onValueChange={(value) => updateDraftOrder('base', value)}
+                                value={draftPoke.base.id}
+                                onValueChange={(value) => updatedraftPoke('base', bases.find(e => e.id === value))}
                             >
                                 <SelectTrigger id="base">
                                     <SelectValue placeholder="Choose a base" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {bases.map((base) => (
-                                        <SelectItem key={base} value={base}>{base}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        <div className="space-y-2">
-                            <Label htmlFor="protein">Select Protein</Label>
-                            <Select
-                                value={draftOrder.protein}
-                                onValueChange={(value) => updateDraftOrder('protein', value)}
-                            >
-                                <SelectTrigger id="protein">
-                                    <SelectValue placeholder="Choose a protein" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {proteins.map((protein) => (
-                                        <SelectItem key={protein} value={protein}>{protein}</SelectItem>
+                                        <SelectItem key={"base" + base.id} value={base.id}>{base.name}</SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
                         </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <Label>Select Portion Size</Label>
-                        <RadioGroup
-                            value={draftOrder.portion}
-                            onValueChange={(value) => updateDraftOrder('portion', value)}
-                            className="flex space-x-4"
-                        >
-                            <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="regular" id="regular" />
-                                <Label htmlFor="regular">Regular</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="large" id="large" />
-                                <Label htmlFor="large">Large</Label>
-                            </div>
-                        </RadioGroup>
-                    </div>
-
-                    <IngredientSelector
-                        ingredients={availableIngredients}
-                        selectedIngredients={draftOrder.ingredients}
-                        onSelect={handleIngredientToggle}
-                    />
+                    <ProteinSelector />
+                    <IngredientSelector />
                 </div>
 
                 <DialogFooter>
@@ -124,7 +116,7 @@ export function CreatePokeModal() {
                     </Button>
                     <Button
                         onClick={handleSubmit}
-                        disabled={!draftOrder.base || !draftOrder.protein || isSubmitting}
+                        disabled={!draftPoke.base || !draftPoke.proteins || isSubmitting}
                     >
                         {isSubmitting ? "Creating..." : "Create Poke Bowl"}
                     </Button>

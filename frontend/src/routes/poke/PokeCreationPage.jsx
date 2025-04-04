@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PokeTable } from "@/components/poke/PokeTable";
-import { DraftOrder } from "@/components/poke/DraftOrder";
+import { DraftPoke } from "@/components/poke/DraftPoke";
 import { CreatePokeModal } from "@/components/poke/CreatePokeModal";
 import usePokeStore from "@/store/usePokeStore";
 import { usePokeService } from "@/services/usePokeService";
@@ -10,16 +10,16 @@ import { usePokeService } from "@/services/usePokeService";
 
 
 export function PokeCreationPage() {
-    const { 
+    const {
         fetchProteins,
         fetchPortions,
         fetchBases,
         fetchIngredients,
-        fetchOrders, 
-        loading, 
-        error 
+        fetchOrders,
+        loading,
+        error
     } = usePokeService();
-    const { orders, draftOrder, setCreateModalOpen } = usePokeStore();
+    const { orders, draftPoke, setCreateModalOpen } = usePokeStore();
     useEffect(() => {
         fetchOrders();
         fetchProteins();
@@ -53,7 +53,7 @@ export function PokeCreationPage() {
 
                 <div>
                     <h2 className="text-xl font-semibold mb-4">Current Draft</h2>
-                    <DraftOrder draftOrder={draftOrder} />
+                    <DraftPoke draftPoke={draftPoke} />
                 </div>
             </div>
 

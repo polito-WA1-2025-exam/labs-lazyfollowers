@@ -4,6 +4,7 @@ import usePokeStore from '../store/usePokeStore';
 
 export function usePokeService() {
     const {
+        setOrders, 
         setBases,
         setIngredients,
         setProteins,
@@ -63,11 +64,11 @@ export function usePokeService() {
     };
 
     const fetchOrders = async () => {
-        return [];
+        return []
         setLoading(true);
         setError(null);
         try {
-            const data = await fetchData('/orders');
+            const data = await fetchData('/assets/orders');
             setOrders(data);
         } catch (err) {
             setError(err.message);

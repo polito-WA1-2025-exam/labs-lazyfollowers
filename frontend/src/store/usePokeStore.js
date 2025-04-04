@@ -8,36 +8,24 @@ const state = (set) => ({
     portions: [],
 
     orders: [],
-    draftOrder: {
+    draftPoke: {
         base: '',
-        protein: '',
-        portion: 'regular',
+        portion: {},
+        proteins: [],
         ingredients: [],
     },
     isCreateModalOpen: false,
 
     setOrders: (orders) => set({ orders }),
-    setDraftOrder: (draftOrder) => set({ draftOrder }),
-    updateDraftOrder: (field, value) => set((state) => ({
-        draftOrder: { ...state.draftOrder, [field]: value }
+    setdraftPoke: (draftPoke) => set({ draftPoke }),
+    updatedraftPoke: (field, value) => set((state) => ({
+        draftPoke: { ...state.draftPoke, [field]: value }
     })),
-    addIngredient: (ingredient) => set((state) => ({
-        draftOrder: {
-            ...state.draftOrder,
-            ingredients: [...state.draftOrder.ingredients, ingredient]
-        }
-    })),
-    removeIngredient: (ingredientId) => set((state) => ({
-        draftOrder: {
-            ...state.draftOrder,
-            ingredients: state.draftOrder.ingredients.filter(i => i.id !== ingredientId)
-        }
-    })),
-    resetDraftOrder: () => set({
-        draftOrder: {
+    resetdraftPoke: () => set({
+        draftPoke: {
             base: '',
-            protein: '',
-            portion: 'regular',
+            portion: {},
+            proteins: [],
             ingredients: [],
         }
     }),
