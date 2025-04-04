@@ -40,8 +40,8 @@ app.use('/api-docs', serve, setup(swaggerDocument));
 // Define routes and web pages
 app.get('/', (req, res) => res.send('Hello World!'));
 
-app.get('/assets/orders', async (req, res) => {
-    res.json(await new Order().fetch_all());
+app.get('/orders', async (req, res) => {
+    res.json(await new Order().fetch_all_with_content());
 }
 );
 app.get('/assets/bases', async (req, res) => {

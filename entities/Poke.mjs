@@ -24,6 +24,27 @@ function PokeBowl() {
     this.price = undefined;
     this.portion_id = undefined; //id of portion
 
+    this.fetch_by_order_id = (order_id) => {
+        return new Promise((resolve, reject) => {
+            let db = new DBconnection();
+            let stmt = db.db.prepare("SELECT * FROM Poke WHERE order_id = ?");
+            stmt.all(order_id, function (err, rows) {
+                if (err || rows == undefined) {
+                    reject("poke not found");
+                } else {
+                    let list_poke = [];
+                    for (let item of rows) {
+                        list_poke.push(item.id);
+                    }
+                    console.log("pokebowls fetch done");
+                    resolve(list_poke);
+                }
+            });
+            stmt.finalize();
+            db.db.close();
+        }
+        );
+    }
     this.modify_by_id = async (poke_id) => {
         console.log(poke_id);
         let poke_verification = await this.fetch_by_id(poke_id)

@@ -24,6 +24,10 @@ components:
       type: object
     CreateOrderRequest:
       properties:
+        poke_ids:
+          items:
+            type: integer
+          type: array
         total_price:
           type: integer
       type: object
@@ -119,20 +123,6 @@ paths:
       summary: Get list of ingredients
       tags:
         - assets
-  /assets/orders:
-    get:
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/Order'
-                type: array
-          description: A list of ingredients
-      summary: Get list of ingredients
-      tags:
-        - assets
   
   /assets/portions:
     get:
@@ -162,6 +152,21 @@ paths:
       summary: Get list of proteins
       tags:
         - assets
+  /orders:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Order'
+                type: array
+          description: A list of ingredients
+      summary: Get list of orders
+      tags:
+        - order
+
   /order:
     post:
       requestBody:
