@@ -28,7 +28,6 @@ function PokeBowl() {
         console.log(poke_id);
         let poke_verification = await this.fetch_by_id(poke_id)
             .catch((err) => { throw new Error(err) });
-        console.log(poke_id_verification);
         if (poke_verification.id != poke_id) {
             throw new Error("poke_id not found");
         }
