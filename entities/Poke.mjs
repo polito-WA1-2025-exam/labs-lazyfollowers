@@ -40,14 +40,16 @@ function PokeBowl() {
         await new Portion().fetch_by_id(this.portion_id)
             .catch((err) => { throw new Error(err) });
 
-        for (let i = 0; i < this.protein_ids.length; i++) {
-            await new Protein().fetch_by_id(this.protein_ids[i])
+        this.protein_ids.forEach(async (protein_id) => {
+            console.log(protein_id);
+            await new Protein().fetch_by_id(protein_id)
                 .catch((err) => { throw new Error(err) });
-        }
-        for (let i = 0; i < this.ingredient_ids.length; i++) {
-            await new Ingredient().fetch_by_id(this.ingredient_ids[i])
+        });
+
+        this.ingredient_ids.forEach(async (ingredient_id) => {
+            await new Ingredient().fetch_by_id(ingredient_id)
                 .catch((err) => { throw new Error(err) });
-        }
+        });
 
         // this.ingredients_ids.map((ingredient_id) => {
         //     if (this.ingredient_ids.length > 5) {
@@ -126,15 +128,15 @@ function PokeBowl() {
         await new Portion().fetch_by_id(this.portion_id)
             .catch((err) => { throw new Error(err) });
 
-        for (let i = 0; i < this.protein_ids.length; i++) {
-            await new Protein().fetch_by_id(this.protein_ids[i])
+        this.protein_ids.forEach(async (protein_id) => {
+            await new Protein().fetch_by_id(protein_id)
                 .catch((err) => { throw new Error(err) });
-        }
-        for (let i = 0; i < this.ingredient_ids.length; i++) {
-            await new Ingredient().fetch_by_id(this.ingredient_ids[i])
+        });
+        this.ingredient_ids.forEach(async (ingredient_id) => {
+            await new Ingredient().fetch_by_id(ingredient_id)
                 .catch((err) => { throw new Error(err) });
-        }
-
+        });
+        
         this.id = await this.insert_pokebowl();
 
         for (let i = 0; i < this.protein_ids.length; i++) {
