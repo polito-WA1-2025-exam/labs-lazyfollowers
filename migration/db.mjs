@@ -11,8 +11,8 @@ class DatabaseConnection {
     db = new sqlite3.Database(dbPath, (err) => {
         if (err) {
             console.error("Error opening database:", err.message);
-        } else {
-            console.log("SQLite database created successfully.");
+        // } else {
+        //     console.log("SQLite database created successfully.");
         }
     });
 }
