@@ -6,6 +6,26 @@ import DBconnection from "../migration/db.mjs";
 function Order() {
     this.id = undefined;
     this.total_price = undefined
+    this.fetch_all_with_content = async () => {
+        return new Promise(async (resolve, reject) => {
+            let all_order = await this.fetch_all();
+            let order_with_content = [];
+            for (let item of all_order) {
+                let order_id_cur = item.id;
+                let total_price_cur = item.total_price;
+                let poke_ids_cur = await new PokeBowl().fetch_by_order_id(order_id_cur)
+                    .catch((err) => { throw new Error(err) });
+                order_with_content.push({
+                    order_id: order_id_cur,
+                    total_price: total_price_cur,
+                    poke_ids: poke_ids_cur
+                });
+            }
+            resolve(order_with_content);
+
+        });
+    }
+
     this.fetch_all = () => {
         return new Promise((resolve, reject) => {
             let db = new DBconnection();
@@ -22,7 +42,6 @@ function Order() {
                         list_order.push(order)
                     }
                     console.log("orders fetches done");
-                    console.log(list_order);
                     resolve(list_order);
                 }
             });
