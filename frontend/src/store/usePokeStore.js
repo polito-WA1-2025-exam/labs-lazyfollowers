@@ -8,6 +8,7 @@ const state = (set) => ({
     portions: [],
 
     orders: [],
+    draftOrder: [],
     draftPoke: {
         base: '',
         portion: {},
@@ -17,7 +18,7 @@ const state = (set) => ({
     isCreateModalOpen: false,
 
     setOrders: (orders) => set({ orders }),
-    setdraftPoke: (draftPoke) => set({ draftPoke }),
+    setDraftOrder: (order) => set({ draftOrder: order }),
     updatedraftPoke: (field, value) => set((state) => ({
         draftPoke: { ...state.draftPoke, [field]: value }
     })),

@@ -2,10 +2,11 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PokeTable } from "@/components/poke/PokeTable";
-import { DraftPoke } from "@/components/poke/DraftPoke";
+import { PokeCard } from "@/components/poke/PokeCard";
 import { CreatePokeModal } from "@/components/poke/CreatePokeModal";
 import usePokeStore from "@/store/usePokeStore";
 import { usePokeService } from "@/services/usePokeService";
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 
 
@@ -17,9 +18,10 @@ export function PokeCreationPage() {
         fetchIngredients,
         fetchOrders,
         loading,
-        error
+        error,
+        createOrder
     } = usePokeService();
-    const { orders, draftPoke, setCreateModalOpen } = usePokeStore();
+    const { orders, draftPoke, setCreateModalOpen, draftOrder, setDraftOrder } = usePokeStore();
     useEffect(() => {
         fetchOrders();
         fetchProteins();
@@ -28,6 +30,24 @@ export function PokeCreationPage() {
         fetchIngredients();
 
     }, []);
+
+    async function submitOrder() {
+        // 
+        if (draftOrder.length <= 0) {
+            return;
+        }
+        let total_price = 0;
+        draftOrder.map((poke) => {
+            total_price += poke.price
+        })
+        const body = {
+            "poke_ids": draftOrder.map((poke) => poke.id ?? null).filter((el) => el != null),
+            "total_price": total_price
+        }
+        await createOrder(body)
+        setDraftOrder([])
+        fetchOrders();
+    }
     return (
         <div className="container mx-auto py-8 space-y-8">
             <div className="flex justify-between items-center">
@@ -52,8 +72,24 @@ export function PokeCreationPage() {
                 </div>
 
                 <div>
-                    <h2 className="text-xl font-semibold mb-4">Current Draft</h2>
-                    <DraftPoke draftPoke={draftPoke} />
+                    <div className="flex flex-row">
+                        <div className="basis-1/3">
+                            <h2 className="text-xl font-semibold mb-4">Current Draft Order</h2>
+                        </div>
+                        <div className="basis-1/3"></div>
+                        <div className="basis-1/3 content-top ">
+                            <Button onClick={() => submitOrder()}>Submit Order</Button>
+                        </div>
+                    </div>
+                    <ScrollArea className="rounded-md border p-4">
+                        <PokeCard title="Current Draft Poke" poke={draftPoke} />
+
+                        {draftOrder?.map((poke, key) => {
+                            return <PokeCard key={"POKECARD" + key} title={"Poke #" + poke.id} poke={poke} />
+                        })}
+
+                    </ScrollArea>
+
                 </div>
             </div>
 

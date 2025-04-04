@@ -20,15 +20,16 @@ import { usePokeService } from "@/services/usePokeService";
 export function CreatePokeModal() {
     const {
         bases,
-        ingredients,
         portions,
         isCreateModalOpen,
         setCreateModalOpen,
         draftPoke,
         updatedraftPoke,
-        resetdraftPoke
+        resetdraftPoke,
+        draftOrder,
+        setDraftOrder
     } = usePokeStore();
-    const { createOrder } = usePokeService();
+    const { createPoke } = usePokeService();
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -40,15 +41,18 @@ export function CreatePokeModal() {
         }
 
         setIsSubmitting(true);
-        try {
-            await createOrder(draftPoke);
-            setCreateModalOpen(false);
-            resetdraftPoke();
-        } catch (error) {
-            console.error("Failed to create order:", error);
-        } finally {
-            setIsSubmitting(false);
+        const body = {
+            "base_id": draftPoke.base.id,
+            "portion_id": draftPoke.portion.id,
+            "price": draftPoke.portion.price,
+            "ingredient_ids": draftPoke.ingredients.map((el) => el.id),
+            "protein_ids": draftPoke.proteins.map((el) => el.id),
         }
+        const newPoke = await createPoke(body)
+        setDraftOrder([...draftOrder, { id: newPoke.id, price: draftPoke.portion.price, ...draftPoke }]);
+        setCreateModalOpen(false);
+        resetdraftPoke();
+        setIsSubmitting(false);
     };
 
     return (

@@ -4,7 +4,7 @@ import usePokeStore from '../store/usePokeStore';
 
 export function usePokeService() {
     const {
-        setOrders, 
+        setOrders,
         setBases,
         setIngredients,
         setProteins,
@@ -64,14 +64,26 @@ export function usePokeService() {
     };
 
     const fetchOrders = async () => {
-        return []
         setLoading(true);
         setError(null);
         try {
-            const data = await fetchData('/assets/orders');
+            const data = await fetchData('/orders');
             setOrders(data);
         } catch (err) {
             setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+    const createPoke = async (pokeData) => {
+        setLoading(true);
+        setError(null);
+        try {
+            const newPoke = await postData('/poke', pokeData);
+            return newPoke;
+        } catch (err) {
+            setError(err.message);
+            return null;
         } finally {
             setLoading(false);
         }
@@ -80,8 +92,7 @@ export function usePokeService() {
         setLoading(true);
         setError(null);
         try {
-            const newOrder = await postData('/orders', orderData);
-            setOrders([...orders, newOrder]);
+            const newOrder = await postData('/order', orderData);
             return newOrder;
         } catch (err) {
             setError(err.message);
@@ -98,6 +109,7 @@ export function usePokeService() {
         fetchOrders,
         fetchIngredients,
         createOrder,
+        createPoke,
         loading,
         error,
     };

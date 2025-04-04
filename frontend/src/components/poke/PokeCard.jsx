@@ -2,13 +2,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-export function DraftPoke({ draftPoke }) {
-    const { base, proteins, portion, ingredients } = draftPoke;
+export function PokeCard({ title, poke }) {
+    const { base, proteins, portion, ingredients } = poke;
 
     return (
-        <Card>
+        <Card className="mt-2">
             <CardHeader>
-                <CardTitle>Current Draft Poke</CardTitle>
+                <CardTitle>{title}</CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="space-y-4">
@@ -25,9 +25,9 @@ export function DraftPoke({ draftPoke }) {
                             <h4 className="text-sm font-medium">Price</h4>
                             <p className="capitalize">
                                 {portion?.price + " "}
-                                {draftPoke.ingredients.length > draftPoke.portion?.max_ingredient
+                                {poke.ingredients.length > poke.portion?.max_ingredient
                                     ? <>
-                                        + {(draftPoke.portion?.increase_percentage_ingredients * portion?.price) / 100}
+                                        + {(poke.portion?.increase_percentage_ingredients * portion?.price) / 100}
                                     </>
                                     : <></>}
                                 €
