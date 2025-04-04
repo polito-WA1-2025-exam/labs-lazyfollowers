@@ -59,10 +59,10 @@ function PokeBowl() {
         await new PokeIngredients().delete_ingredients(poke_id).catch((err) => { console.log(err) });
 
         for (let i = 0; i < this.protein_ids.length; i++) {
-            await new PokeProteins().insert_protein(this.id, this.protein_ids[i]).catch((err) => { console.log(err) });
+            await new PokeProteins().insert_protein(poke_id, this.protein_ids[i]).catch((err) => { console.log(err) });
         }
         for (let i = 0; i < this.ingredient_ids.length; i++) {
-            await new PokeIngredients().insert_ingredient(this.id, this.ingredient_ids[i]).catch((err) => { console.log(err) });
+            await new PokeIngredients().insert_ingredient(poke_id, this.ingredient_ids[i]).catch((err) => { console.log(err) });
         }
 
         return new Promise((resolve, reject) => {
