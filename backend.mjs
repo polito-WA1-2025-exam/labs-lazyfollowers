@@ -80,7 +80,7 @@ app.post('/order', async (req, res) => {
     try {
         let order_id = await order.insert_order_and_content();
         console.log(order);
-        res.status(201).json({ "id": order_id});
+        res.status(201).json({ "id": order_id });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }

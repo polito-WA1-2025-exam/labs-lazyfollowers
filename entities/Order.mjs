@@ -6,6 +6,7 @@ import DBconnection from "../migration/db.mjs";
 function Order() {
     this.id = undefined;
     this.total_price = undefined
+
     this.fetch_all_with_content = async () => {
         return new Promise(async (resolve, reject) => {
             let all_order = await this.fetch_all();
@@ -50,13 +51,17 @@ function Order() {
         });
     }
     this.insert_order_and_content = async () => {
-        if (this.total_price <= 0) { // TODO: Calculate price with portion and ingredients ////////////////////////////////////
-            throw new Error("price is negative");
-        }
+        let computed_total_price = 0;
         for (let i = 0; i < this.poke_ids.length; i++) {
-            await new PokeBowl().fetch_by_id(this.poke_ids[i])
+            let poke_curr = await new PokeBowl().fetch_by_id(this.poke_ids[i])
                 .catch((err) => { throw new Error(err) });
+            computed_total_price += poke_curr.price
         }
+
+        if (computed_total_price != this.total_price) { // TODO: Calculate price with portion and ingredients ////////////////////////////////////
+            throw new Error("error in price");
+        }
+
         this.id = await this.insert_order();
 
         for (let i = 0; i < this.poke_ids.length; i++) {
@@ -86,12 +91,6 @@ function Order() {
             db.db.close();
         });
     }
-
-
-    // DON'T USE, WORK IN PROGRESS
-    // this.add_Poke = (Pokebowl) => this.list_of_poke_bowl.push(Pokebowl);
-    // this.remove_Poke = (criteria, value) => this.list_of_poke_bowl.filter(Pokebowl => Pokebowl.criteria != value);
-    // this.total_price = () => console.log("TO DO : calculate price");
 }
 
 

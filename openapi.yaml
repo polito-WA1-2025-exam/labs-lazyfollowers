@@ -14,6 +14,27 @@ components:
           type: integer
         total_price:
           type: number
+        poke:
+          items:
+            properties:
+              id:
+                type: integer
+              base_id:
+                type: integer
+              protein_ids:
+                items:
+                  type: integer
+                type: array
+              ingredient_ids:
+                items:
+                  type: integer
+                type: array
+              price:
+                type: number
+              portion_id:
+                type: integer
+            type: object
+          type: array
       type: object
     Ingredient:
       properties:

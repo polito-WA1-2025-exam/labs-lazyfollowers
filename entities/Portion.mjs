@@ -10,6 +10,7 @@ function Portion() {
     this.max_protein = undefined;
     this.max_ingredient = undefined;
     this.increase_percentage_ingredients = undefined;
+    
     this.fetch_all = () => {
         return new Promise((resolve, reject) => {
             let db = new DBconnection();
