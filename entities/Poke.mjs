@@ -10,12 +10,6 @@ import PokeProteins from "../contents/PokeProteins.mjs";
 
 // constructor function of poke_bowl 
 function PokeBowl() {
-    /*create a pokebowl choosing a size
-    add one ingredient
-    remove on ingredient
-    add one protein
-    remove on protein
-    choose/change base*/
 
     this.id = undefined;
     this.base_id = undefined; //id of base
@@ -63,71 +57,88 @@ function PokeBowl() {
         return list_poke;
     }
 
-    this.modify_by_id = async (poke_id) => {
-        let poke_verification = await this.fetch_by_id(poke_id)
-            .catch((err) => { throw new Error(err) });
-        if (poke_verification.id != poke_id) {
-            throw new Error("poke_id not found");
-        }
+    this.poke_verification = async () => {
 
-        if (this.price < 0) { // TODO: Calculate price with portion and ingredients ////////////////////////////////////
-            throw new Error("price is negative");
-        }
         await new Base().fetch_by_id(this.base_id)
             .catch((err) => { throw new Error(err) });
-        await new Portion().fetch_by_id(this.portion_id)
-            .catch((err) => { throw new Error(err) });
 
+        let cur_portion = await new Portion().fetch_by_id(this.portion_id)
+            .catch((err) => { throw new Error(err) });
+        let protein_counter = 0;
+        let ingredient_counter = 0;
         for (let i = 0; i < this.protein_ids.length; i++) {
             await new Protein().fetch_by_id(this.protein_ids[i])
                 .catch((err) => { throw new Error(err) });
+            protein_counter++;
         }
         for (let i = 0; i < this.ingredient_ids.length; i++) {
             await new Ingredient().fetch_by_id(this.ingredient_ids[i])
                 .catch((err) => { throw new Error(err) });
+            ingredient_counter++;
+        }
+        if (ingredient_counter < 1) {
+            throw new Error("wrong number of ingredients");
+        }
+        if (protein_counter != cur_portion.amount_proteins) {
+            throw new Error("wrong number of proteins");
         }
 
-        // this.ingredients_ids.map((ingredient_id) => {
-        //     if (this.ingredient_ids.length > 5) {
-        //         throw new Error("too many ingredients");
-        //     }
-        // });
-
-        await new PokeProteins().delete_proteins(poke_id).catch((err) => { console.log(err) });
-        await new PokeIngredients().delete_ingredients(poke_id).catch((err) => { console.log(err) });
-
-        for (let i = 0; i < this.protein_ids.length; i++) {
-            await new PokeProteins().insert_protein(poke_id, this.protein_ids[i]).catch((err) => { console.log(err) });
+        let excess_ingredient = Math.max((ingredient_counter-cur_portion.amount_ingredients),0);
+        
+        let calculated_price = cur_portion.base_price * (1+cur_portion.increase_percentage_ingredients*excess_ingredient/100);
+        calculated_price = Math.round((calculated_price + Number.EPSILON) * 100) / 100
+        if (this.price != calculated_price) { // TODO: Calculate price with portion and ingredients ////////////////////////////////////
+            throw new Error("error in price");
         }
-        for (let i = 0; i < this.ingredient_ids.length; i++) {
-            await new PokeIngredients().insert_ingredient(poke_id, this.ingredient_ids[i]).catch((err) => { console.log(err) });
-        }
+        return true
+    }
 
-        return new Promise((resolve, reject) => {
-            let db = new DBconnection();
-            let stmt = db.db.prepare("UPDATE Poke SET (base_id, price, portion_id) = (?, ?, ?) WHERE id = ?");
-            stmt.run(this.base_id, this.price, this.portion_id, poke_id, function (err) {
-                if (err) {
-                    if (poke_id == undefined || this.base_id == undefined || this.price == undefined || this.portion_id == undefined) {
-                        reject("id or base or price or portion is not defined");
+    this.modify_by_id = async (poke_id) => {
+
+        let poke_exist = await this.fetch_by_id(poke_id)
+            .catch((err) => { throw new Error(err) });
+        if (poke_exist.id != poke_id) {
+            throw new Error("poke_id not found");
+        }
+        let validation = await this.poke_verification().catch((err) => { throw new Error(err) });
+        if (validation == true) {
+
+            await new PokeProteins().delete_proteins(poke_id).catch((err) => { console.log(err) });
+            await new PokeIngredients().delete_ingredients(poke_id).catch((err) => { console.log(err) });
+
+            for (let i = 0; i < this.protein_ids.length; i++) {
+                await new PokeProteins().insert_protein(poke_id, this.protein_ids[i]).catch((err) => { console.log(err) });
+            }
+            for (let i = 0; i < this.ingredient_ids.length; i++) {
+                await new PokeIngredients().insert_ingredient(poke_id, this.ingredient_ids[i]).catch((err) => { console.log(err) });
+            }
+
+            return new Promise((resolve, reject) => {
+                let db = new DBconnection();
+                let stmt = db.db.prepare("UPDATE Poke SET (base_id, price, portion_id) = (?, ?, ?) WHERE id = ?");
+                stmt.run(this.base_id, this.price, this.portion_id, poke_id, function (err) {
+                    if (err) {
+                        if (poke_id == undefined || this.base_id == undefined || this.price == undefined || this.portion_id == undefined) {
+                            reject("id or base or price or portion is not defined");
+                        }
+                        else {
+                            reject(err);
+                        }
                     }
                     else {
-                        reject(err);
+                        let pokebowl_to_return = new PokeBowl();
+                        pokebowl_to_return.id = poke_id;
+                        pokebowl_to_return.base_id = this.base_id;
+                        pokebowl_to_return.price = this.price;
+                        console.log("pokebowl update done");
+                        resolve(pokebowl_to_return);
                     }
-                }
-                else {
-                    let pokebowl_to_return = new PokeBowl();
-                    pokebowl_to_return.id = poke_id;
-                    pokebowl_to_return.base_id = this.base_id;
-                    pokebowl_to_return.price = this.price;
-                    console.log("pokebowl update done");
-                    resolve(pokebowl_to_return);
-                }
-            });
-            stmt.finalize();
-            db.db.close();
+                });
+                stmt.finalize();
+                db.db.close();
+            }
+            );
         }
-        );
     }
 
     this.update_order_id = async (poke_id) => {
@@ -177,33 +188,19 @@ function PokeBowl() {
     }
 
     this.insert_pokebowl_and_content = async () => {
+        let validation = await this.poke_verification().catch((err) => { throw new Error(err) });
+        if (validation == true) {
 
-        if (this.price < 0) { // TODO: Calculate price with portion and ingredients ////////////////////////////////////
-            throw new Error("price is negative");
-        }
-        await new Base().fetch_by_id(this.base_id)
-            .catch((err) => { throw new Error(err) });
-        await new Portion().fetch_by_id(this.portion_id)
-            .catch((err) => { throw new Error(err) });
+            this.id = await this.insert_pokebowl();
 
-        for (let i = 0; i < this.protein_ids.length; i++) {
-            await new Protein().fetch_by_id(this.protein_ids[i])
-                .catch((err) => { throw new Error(err) });
+            for (let i = 0; i < this.protein_ids.length; i++) {
+                await new PokeProteins().insert_protein(this.id, this.protein_ids[i]).catch((err) => { console.log(err) });
+            }
+            for (let i = 0; i < this.ingredient_ids.length; i++) {
+                await new PokeIngredients().insert_ingredient(this.id, this.ingredient_ids[i]).catch((err) => { console.log(err) });
+            }
+            return this.id;
         }
-        for (let i = 0; i < this.ingredient_ids.length; i++) {
-            await new Ingredient().fetch_by_id(this.ingredient_ids[i])
-                .catch((err) => { throw new Error(err) });
-        }
-
-        this.id = await this.insert_pokebowl();
-
-        for (let i = 0; i < this.protein_ids.length; i++) {
-            await new PokeProteins().insert_protein(this.id, this.protein_ids[i]).catch((err) => { console.log(err) });
-        }
-        for (let i = 0; i < this.ingredient_ids.length; i++) {
-            await new PokeIngredients().insert_ingredient(this.id, this.ingredient_ids[i]).catch((err) => { console.log(err) });
-        }
-        return this.id;
     }
     this.insert_pokebowl = async () => {
         return new Promise((resolve, reject) => {

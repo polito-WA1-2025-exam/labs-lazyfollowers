@@ -6,9 +6,9 @@ import DBconnection from "../migration/db.mjs";
 function Portion() {
     this.name = undefined;
     this.id = undefined;
-    this.price = undefined;
-    this.max_protein = undefined;
-    this.max_ingredient = undefined;
+    this.base_price = undefined;
+    this.amount_proteins = undefined;
+    this.amount_ingredients = undefined;
     this.increase_percentage_ingredients = undefined;
     
     this.fetch_all = () => {
@@ -24,9 +24,9 @@ function Portion() {
                         let portion = new Portion();
                         portion.id = item.id;
                         portion.name = item.name;
-                        portion.price = item.base_price;
-                        portion.max_protein = item.amount_proteins;
-                        portion.max_ingredient = item.amount_ingredients;
+                        portion.base_price = item.base_price;
+                        portion.amount_proteins = item.amount_proteins;
+                        portion.amount_ingredients = item.amount_ingredients;
                         portion.increase_percentage_ingredients = item.increase_percentage_ingredients;
                         list_portion.push(portion)
                     }
@@ -50,9 +50,9 @@ function Portion() {
                     let portion_to_return = new Portion();
                     portion_to_return.id = row.id;
                     portion_to_return.name = row.name;
-                    portion_to_return.price = row.base_price;
-                    portion_to_return.max_protein = row.amount_proteins;
-                    portion_to_return.max_ingredient = row.amount_ingredients;
+                    portion_to_return.base_price = row.base_price;
+                    portion_to_return.amount_proteins = row.amount_proteins;
+                    portion_to_return.amount_ingredients = row.amount_ingredients;
                     portion_to_return.increase_percentage_ingredients = row.increase_percentage_ingredients;
                     console.log("portion fetch done");
                     resolve(portion_to_return);

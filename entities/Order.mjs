@@ -51,14 +51,23 @@ function Order() {
         });
     }
     this.insert_order_and_content = async () => {
+        let counter = 0;
         let computed_total_price = 0;
         for (let i = 0; i < this.poke_ids.length; i++) {
             let poke_curr = await new PokeBowl().fetch_by_id(this.poke_ids[i])
                 .catch((err) => { throw new Error(err) });
             computed_total_price += poke_curr.price
+            counter++;
         }
+        console.log(computed_total_price)
+        if (counter >=5) {
+            computed_total_price = computed_total_price * 0.9;
+        }
+        computed_total_price = Math.round((computed_total_price + Number.EPSILON) * 100) / 100
 
-        if (computed_total_price != this.total_price) { // TODO: Calculate price with portion and ingredients ////////////////////////////////////
+        console.log(computed_total_price);
+
+        if (computed_total_price != this.total_price) {
             throw new Error("error in price");
         }
 
