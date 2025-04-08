@@ -42,7 +42,6 @@ function PokeBowl() {
                         list_poke.push(pokebowl_to_return);
                     }
                     console.log("pokebowls fetch done");
-                    console.log(list_poke);
                     resolve(list_poke);
                 }
             });
@@ -54,7 +53,6 @@ function PokeBowl() {
 
     this.fetch_poke_and_content_by_order_id = async (order_id) => {
         let list_poke = await this.fetch_poke_by_order_id(order_id);
-        console.log(list_poke);
         for (let poke of list_poke) {
             let protein_ids_fetch = await new PokeProteins().fetch_by_poke_id(poke.id);
             let ingredient_ids_fetch = await new PokeIngredients().fetch_by_poke_id(poke.id);
