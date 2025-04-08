@@ -22,49 +22,49 @@ function PokeProteins() {
     //     });
     // }
 
-    // this.check_poke_in_table = (poke_id) => {
-    //     return new Promise((resolve, reject) => {
-    //         let db = new DBconnection();
-    //         let stmtpoke = db.db.prepare("SELECT * FROM Pokeproteins WHERE poke_id = ?");
-    //         stmtpoke.all(poke_id, function (err, rows) {
-    //             if (rows.length == 0 || err ) {
-    //                 reject("this pokebowl has no protein");
-    //             } else {
-    //                 resolve("pokebowl has protein");
-    //             }
-    //         });
-    //         stmtpoke.finalize();
-    //         db.db.close();
-    //     });
-    // }
+    this.check_poke_in_table = (poke_id) => {
+        return new Promise((resolve, reject) => {
+            let db = new DBconnection();
+            let stmtpoke = db.db.prepare("SELECT * FROM Pokeproteins WHERE poke_id = ?");
+            stmtpoke.all(poke_id, function (err, rows) {
+                if (rows.length == 0 || err ) {
+                    reject("this pokebowl has no protein");
+                } else {
+                    resolve("pokebowl has protein");
+                }
+            });
+            stmtpoke.finalize();
+            db.db.close();
+        });
+    }
 
-    // this.fetch_by_poke_id = async (id) => {
-    //     try {
-    //         await this.check_poke_in_table(id)
-    //     }
-    //     catch (e){
-    //         throw new Error(e);
-    //     }
-    //     return new Promise((resolve, reject) => {
-    //         let db = new DBconnection();
-    //         let stmtprotein = db.db.prepare("SELECT protein_id FROM Pokeproteins WHERE poke_id = ?");
-    //         stmtprotein.all(id, function (err, rows) {
-    //             if (rows.length == 0 || err ) {
-    //                 reject("no protein found for this pokebowl");
-    //             } else {
-    //                 let result = []
-    //                 for (let item of rows){
-    //                     result.push(item.protein_id)
-    //                 }
-    //                 console.log("proteins fetch done");
+    this.fetch_by_poke_id = async (id) => {
+        try {
+            await this.check_poke_in_table(id)
+        }
+        catch (e){
+            throw new Error(e);
+        }
+        return new Promise((resolve, reject) => {
+            let db = new DBconnection();
+            let stmtprotein = db.db.prepare("SELECT protein_id FROM Pokeproteins WHERE poke_id = ?");
+            stmtprotein.all(id, function (err, rows) {
+                if (rows.length == 0 || err ) {
+                    reject("no protein found for this pokebowl");
+                } else {
+                    let result = []
+                    for (let item of rows){
+                        result.push(item.protein_id)
+                    }
+                    console.log("proteins fetch done");
+                    resolve(result);
+                }
+            });
+            stmtprotein.finalize();
+            db.db.close();
+        });
+    }
 
-    //                 resolve(result);
-    //             }
-    //         });
-    //         stmtprotein.finalize();
-    //         db.db.close();
-    //     });
-    // }
     this.delete_proteins = async (poke_id) => {
         return new Promise((resolve, reject) => {
             let db = new DBconnection();
@@ -98,24 +98,6 @@ function PokeProteins() {
             db.db.close();
         });
     }
-
-    // this.delete_protein = async (id_to_delete) => {
-    //     return new Promise((resolve, reject) => {
-    //         let db = new DBconnection();
-    //         let stmt = db.db.prepare("DELETE FROM Pokeproteins WHERE id = ?");
-    //         stmt.run(id_to_delete, function (err) {
-    //             if (err || this.lastID == 0) {
-    //                 reject("protein not in pokebowl");
-    //             }
-    //             else {
-    //                 console.log("protein delete done");
-    //                 resolve(this.lastID);
-    //             }
-    //         });
-    //         stmt.finalize();
-    //         db.db.close();
-    //     });
-    // }
 }
 
 export default PokeProteins;

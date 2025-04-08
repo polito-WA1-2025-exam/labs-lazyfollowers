@@ -13,12 +13,12 @@ function Order() {
             for (let item of all_order) {
                 let order_id_cur = item.id;
                 let total_price_cur = item.total_price;
-                let poke_ids_cur = await new PokeBowl().fetch_by_order_id(order_id_cur)
+                let poke_cur = await new PokeBowl().fetch_poke_and_content_by_order_id(order_id_cur)
                     .catch((err) => { throw new Error(err) });
                 order_with_content.push({
                     order_id: order_id_cur,
                     total_price: total_price_cur,
-                    poke_ids: poke_ids_cur
+                    poke: poke_cur
                 });
             }
             resolve(order_with_content);

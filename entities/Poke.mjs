@@ -24,7 +24,7 @@ function PokeBowl() {
     this.price = undefined;
     this.portion_id = undefined; //id of portion
 
-    this.fetch_by_order_id = (order_id) => {
+    this.fetch_poke_by_order_id = (order_id) => {
         return new Promise((resolve, reject) => {
             let db = new DBconnection();
             let stmt = db.db.prepare("SELECT * FROM Poke WHERE order_id = ?");
@@ -34,7 +34,12 @@ function PokeBowl() {
                 } else {
                     let list_poke = [];
                     for (let item of rows) {
-                        list_poke.push(item.id);
+                        let pokebowl_to_return = new PokeBowl();
+                        pokebowl_to_return.id = item.id;
+                        pokebowl_to_return.price = item.price;
+                        pokebowl_to_return.base_id = item.base_id;
+                        pokebowl_to_return.portion_id = item.portion_id;
+                        list_poke.push(pokebowl_to_return);
                     }
                     console.log("pokebowls fetch done");
                     resolve(list_poke);
@@ -45,6 +50,22 @@ function PokeBowl() {
         }
         );
     }
+
+    this.fetch_poke_and_content_by_order_id = async (order_id) => {
+        let list_poke = await this.fetch_poke_by_order_id(order_id);
+
+        for (let poke of list_poke) {
+            let protein_ids_fetch = await new PokeProteins().fetch_by_poke_id(poke.id);
+            let ingredient_ids_fetch = await new PokeIngredients().fetch_by_poke_id(poke.id);
+            poke.protein_ids = protein_ids_fetch;
+            poke.ingredient_ids = ingredient_ids_fetch;
+            console.log(poke)
+            return poke;
+        };
+
+        return list_poke;
+    }
+
     this.modify_by_id = async (poke_id) => {
         console.log(poke_id);
         let poke_verification = await this.fetch_by_id(poke_id)
