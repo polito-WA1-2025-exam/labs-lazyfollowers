@@ -20,7 +20,7 @@ const state = (set) => ({
     setOrders: (orders) => set({ orders }),
     setDraftOrder: (order) => set({ draftOrder: order }),
     updatedraftPoke: (field, value) => set((state) => ({
-        draftPoke: { ...state.draftPoke, [field]: typeof value === "object" ? {...value} : value }
+        draftPoke: { ...state.draftPoke, [field]: value }
     })),
     resetdraftPoke: () => set({
         draftPoke: {
