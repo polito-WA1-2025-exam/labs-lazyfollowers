@@ -24,10 +24,10 @@ export function PokeCard({ title, poke }) {
                         <div>
                             <h4 className="text-sm font-medium">Price</h4>
                             <p className="capitalize">
-                                {portion?.price + " "}
+                                {portion?.base_price + " "}
                                 {poke.ingredients.length > poke.portion?.max_ingredient
                                     ? <>
-                                        + {(poke.portion?.increase_percentage_ingredients * portion?.price) / 100}
+                                        + {(poke.portion?.increase_percentage_ingredients * portion?.base_price) / 100}
                                     </>
                                     : <></>}
                                 €

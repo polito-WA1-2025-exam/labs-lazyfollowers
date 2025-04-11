@@ -118,7 +118,7 @@ app.put('/poke/:id', async (req, res) => {
 }
 );
 
-const port = 8000;
+const port = 8012;
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
     console.log(`Swagger docs available at http://localhost:${port}/api-docs`);

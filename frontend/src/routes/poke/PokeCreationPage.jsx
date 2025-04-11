@@ -1,7 +1,7 @@
 // src/pages/PokeCreationPage.jsx
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PokeTable } from "@/components/poke/PokeTable";
+import { OrderTable } from "@/components/poke/OrderTable";
 import { PokeCard } from "@/components/poke/PokeCard";
 import { CreatePokeModal } from "@/components/poke/CreatePokeModal";
 import usePokeStore from "@/store/usePokeStore";
@@ -67,7 +67,7 @@ export function PokeCreationPage() {
                             Error loading orders: {error}
                         </div>
                     ) : (
-                        <PokeTable orders={orders} />
+                        <OrderTable orders={orders} />
                     )}
                 </div>
 

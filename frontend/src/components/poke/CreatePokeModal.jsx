@@ -44,12 +44,12 @@ export function CreatePokeModal() {
         const body = {
             "base_id": draftPoke.base.id,
             "portion_id": draftPoke.portion.id,
-            "price": draftPoke.portion.price,
+            "price": draftPoke.portion.base_price,
             "ingredient_ids": draftPoke.ingredients.map((el) => el.id),
             "protein_ids": draftPoke.proteins.map((el) => el.id),
         }
         const newPoke = await createPoke(body)
-        setDraftOrder([...draftOrder, { id: newPoke.id, price: draftPoke.portion.price, ...draftPoke }]);
+        setDraftOrder([...draftOrder, { id: newPoke.id, price: draftPoke.portion.base_price, ...draftPoke }]);
         setCreateModalOpen(false);
         resetdraftPoke();
         setIsSubmitting(false);
@@ -81,13 +81,17 @@ export function CreatePokeModal() {
                         </div>
                         <div className="space-y-2">
                             <Label>Details</Label>
-                            <p className={draftPoke.ingredients.length > draftPoke.portion?.max_ingredient
+                            <p className={draftPoke.ingredients.length > draftPoke.portion?.base_price
                                 ? "bg-yellow-400 rounded-xl p-1 ps-3" : ""}>
-                                Ingredients count: {draftPoke.portion?.max_ingredient}
+                                Base price: {draftPoke.portion?.base_price}
                             </p>
-                            <p className={draftPoke.proteins.length > draftPoke.portion?.max_protein
+                            <p className={draftPoke.ingredients.length > draftPoke.portion?.amount_ingredients
                                 ? "bg-yellow-400 rounded-xl p-1 ps-3" : ""}>
-                                Proteins count: {draftPoke.portion?.max_protein}
+                                Ingredients count: {draftPoke.portion?.amount_ingredients}
+                            </p>
+                            <p className={draftPoke.proteins.length > draftPoke.portion?.amount_proteins
+                                ? "bg-yellow-400 rounded-xl p-1 ps-3" : ""}>
+                                Proteins count: {draftPoke.portion?.amount_proteins}
                             </p>
                         </div>
                     </div>
