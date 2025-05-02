@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { PokeCreationPage } from "@/routes/poke/PokeCreationPage";
 import { UserInfoPage } from "@/routes/user/UserInfoPage";
 import { Header } from "@/components/layout/Header";
+import { PageNotFound } from "./routes/error/PageNotFound";
 
 function App() {
     return (
@@ -13,6 +14,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<PokeCreationPage />} />
                         <Route path="/user" element={<UserInfoPage />} />
+                        <Route path="*" element={<PageNotFound/>} />
                     </Routes>
                 </main>
             </div>
