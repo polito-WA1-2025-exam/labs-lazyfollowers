@@ -1,9 +1,3 @@
-// import express from 'express';
-// import swaggerUi from 'swagger-ui-express';
-// import fs from 'fs';
-// import path from 'path';
-// import yaml from 'js-yaml';
-// import morgan from 'morgan';
 import express, { json } from 'express';
 import { serve, setup } from 'swagger-ui-express';
 import { readFileSync } from 'fs';
