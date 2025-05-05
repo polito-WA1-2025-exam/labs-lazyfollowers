@@ -6,22 +6,6 @@ import Poke from "../entities/Poke.mjs";
 function PokeIngredients() {
     this.id = undefined;
 
-    // this.check_line_in_table = (poke_id, ingredient_id) => {
-    //     return new Promise((resolve, reject) => {
-    //         let db = new DBconnection();
-    //         let stmt = db.db.prepare("SELECT * FROM PokeIngredients WHERE poke_id = ? AND ingredient_id = ?");
-    //         stmt.get(poke_id, ingredient_id, function (err, row) {
-    //             if (row == undefined || err) {
-    //                 reject("ingredient or pokebowl not found");
-    //             } else {
-    //                 resolve("ingredient in pokebowl");
-    //             }
-    //         });
-    //         stmt.finalize();
-    //         db.db.close();
-    //     });
-    // }
-
     this.check_poke_in_table = (poke_id) => {
         return new Promise((resolve, reject) => {
             let db = new DBconnection();
@@ -90,7 +74,7 @@ function PokeIngredients() {
             let db = new DBconnection();
             let stmt = db.db.prepare("DELETE FROM PokeIngredients WHERE poke_id = ?");
             stmt.run(poke_id, function (err) {
-                if (err || this.lastID == 0) {
+                if (err) {
                     reject("ingredient not in pokebowl");
                 }
                 else {

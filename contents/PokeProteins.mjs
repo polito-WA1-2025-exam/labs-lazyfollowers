@@ -66,11 +66,12 @@ function PokeProteins() {
     }
 
     this.delete_proteins = async (poke_id) => {
+        console.log(poke_id);
         return new Promise((resolve, reject) => {
             let db = new DBconnection();
             let stmt = db.db.prepare("DELETE FROM Pokeproteins WHERE poke_id = ?");
             stmt.run(poke_id, function (err) {
-                if (err || this.lastID == 0) {
+                if (err) {
                     reject("protein not in pokebowl");
                 }
                 else {

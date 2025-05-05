@@ -66,16 +66,17 @@ function PokeBowl() {
             .catch((err) => { throw new Error(err) });
         let protein_counter = 0;
         let ingredient_counter = 0;
-        for (let i = 0; i < this.protein_ids.length; i++) {
-            await new Protein().fetch_by_id(this.protein_ids[i])
+
+        await Promise.all(this.protein_ids.map((protein_id) => {
+            new Protein().fetch_by_id(protein_id)
                 .catch((err) => { throw new Error(err) });
             protein_counter++;
-        }
-        for (let i = 0; i < this.ingredient_ids.length; i++) {
-            await new Ingredient().fetch_by_id(this.ingredient_ids[i])
+        }));
+        await Promise.all(this.ingredient_ids.map((ingredient_id) => {
+            new Ingredient().fetch_by_id(ingredient_id)
                 .catch((err) => { throw new Error(err) });
             ingredient_counter++;
-        }
+        }));
         if (ingredient_counter < 1) {
             throw new Error("wrong number of ingredients");
         }
@@ -102,17 +103,35 @@ function PokeBowl() {
         }
         let validation = await this.poke_verification().catch((err) => { throw new Error(err) });
         if (validation == true) {
+            console.log("poke exist");
 
-            await new PokeProteins().delete_proteins(poke_id).catch((err) => { console.log(err) });
-            await new PokeIngredients().delete_ingredients(poke_id).catch((err) => { console.log(err) });
-
-            for (let i = 0; i < this.protein_ids.length; i++) {
-                await new PokeProteins().insert_protein(poke_id, this.protein_ids[i]).catch((err) => { console.log(err) });
+            //deleting old contente
+            await new PokeProteins().delete_proteins(poke_id).catch((err) => { throw new Error(err) });
+            console.log("all proteins deleted");
+            await new PokeIngredients().delete_ingredients(poke_id).catch((err) => { throw new Error(err) });
+            
+            //adding new content
+            Promise.all(this.protein_ids.map((protein_id) => {
+                new PokeProteins().insert_protein(poke_id, protein_id)
+                    .catch((err) => { throw new Error(err) });
             }
-            for (let i = 0; i < this.ingredient_ids.length; i++) {
-                await new PokeIngredients().insert_ingredient(poke_id, this.ingredient_ids[i]).catch((err) => { console.log(err) });
+            ));
+            Promise.all(this.ingredient_ids.map((ingredient_id) => {
+                new PokeIngredients().insert_ingredient(poke_id, ingredient_id)
+                    .catch((err) => { throw new Error(err) });
             }
-
+            ));
+            // await Promise.all(this.protein_ids.map((protein_id) => {
+            //     new Protein().fetch_by_id(protein_id)
+            //         .catch((err) => { throw new Error(err) });
+            // }
+            // ));
+            // await Promise.all(this.ingredient_ids.map((ingredient_id) => {
+            //     new Ingredient().fetch_by_id(ingredient_id)
+            //         .catch((err) => { throw new Error(err) });
+            // }
+            // ));
+            
             return new Promise((resolve, reject) => {
                 let db = new DBconnection();
                 let stmt = db.db.prepare("UPDATE Poke SET (base_id, price, portion_id) = (?, ?, ?) WHERE id = ?");
@@ -192,13 +211,16 @@ function PokeBowl() {
         if (validation == true) {
 
             this.id = await this.insert_pokebowl();
-
-            for (let i = 0; i < this.protein_ids.length; i++) {
-                await new PokeProteins().insert_protein(this.id, this.protein_ids[i]).catch((err) => { console.log(err) });
+            await Promise.all(this.protein_ids.map((protein_id) => {
+                new Protein().fetch_by_id(protein_id)
+                    .catch((err) => { throw new Error(err) });
             }
-            for (let i = 0; i < this.ingredient_ids.length; i++) {
-                await new PokeIngredients().insert_ingredient(this.id, this.ingredient_ids[i]).catch((err) => { console.log(err) });
+            ));
+            await Promise.all(this.ingredient_ids.map((ingredient_id) => {
+                new Ingredient().fetch_by_id(ingredient_id)
+                    .catch((err) => { throw new Error(err) });
             }
+            ));
             return this.id;
         }
     }
