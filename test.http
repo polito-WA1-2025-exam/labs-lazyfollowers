@@ -10,7 +10,17 @@ GET http://localhost:8000/assets/proteins
 
 ###
 
-GET http://localhost:8000/assets/portions
+GET http://localhost:8012/assets/portions
+
+###
+
+POST http://localhost:8012/api/login
+Content-Type: application/json
+
+{
+  "username": "aze",
+  "password": "password"
+}
 
 ###
 

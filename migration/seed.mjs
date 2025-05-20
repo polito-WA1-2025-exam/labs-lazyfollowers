@@ -82,6 +82,13 @@ async function createTables() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       total_price REAL NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS Users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT NOT NULL,
+      salt TEXT NOT NULL,
+      password TEXT NOT NULL
+    );
   `;
 
     await db.exec(sql, (err) => {

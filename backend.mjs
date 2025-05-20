@@ -12,11 +12,15 @@ import Protein from "./entities/Protein.mjs";
 import Ingredient from "./entities/Ingredient.mjs";
 import Order from "./entities/Order.mjs";
 import Portion from "./entities/Portion.mjs";
-import OrderService from "./service/OrderService.mjs";
 import Base from "./entities/Base.mjs";
 import PokeIngredients from "./contents/PokeIngredients.mjs";
 import PokeProteins from "./contents/PokeProteins.mjs";
 
+import passport from "passport";
+import LocalStrategy from "passport-local";
+import { getUser} from "./service/authentification service.mjs";
+import crypto from 'crypto';
+import session from 'express-session';
 
 const app = express();
 app.use(function (req, res, next) {
@@ -46,6 +50,56 @@ const swaggerDocument = load(readFileSync(swaggerFile, 'utf8'));
 
 app.use('/api-docs', serve, setup(swaggerDocument));
 
+passport.use(new LocalStrategy(function verify(username, password, callback) {
+    getUser(username,
+        password).then((user) => {
+            if (!user)
+                return callback(null, false, {
+                    message: 'Incorrect username and/or password.'
+                });
+            return callback(null, user);
+        });
+}));
+
+// enable sessions in Express
+app.use(session({
+    // set up here express-session
+    secret: "a secret phrase of your choice",
+    resave: false,
+    saveUninitialized: false,
+}));
+// init Passport to use sessions
+app.use(passport.authenticate('session'));
+
+
+passport.serializeUser((user, cb) => {
+    cb(null, { id: user.id, email: user.username, name: user.name });
+});
+
+passport.deserializeUser((user, cb) => {
+    return cb(null, user);
+});
+
+app.post('/api/login', passport.authenticate('local'), (req, res) => {
+    // This function is called if authentication is successful.
+    // req.user contains the authenticated user.
+    res.json(req.user.username);
+});
+
+app.post('/api/logout', (req, res) => {
+    req.logout(() => {
+        res.end();
+    });
+});
+
+
+const isLoggedIn = (req, res, next) => {
+    if(req.isAuthenticated())
+    return next();
+    return res.status(400).json({message : "not authenticated"});
+    }
+
+app.use(isLoggedIn);
 
 // Define routes and web pages
 app.get('/', (req, res) => res.send('Hello World!'));
